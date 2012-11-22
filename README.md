@@ -1,4 +1,0 @@
-bymc
-====
-
-bymc project

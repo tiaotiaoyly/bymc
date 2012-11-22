@@ -1,0 +1,576 @@
+[{
+	"title": "Adding Freon",
+	"icon": "BM01.gif",
+	"content": [{
+		"title": "",
+		"content": [{
+			"text": "Things you will need: Freon, Recharging hose",
+			"image": "BM01.gif"
+		},
+		{
+			"text": "Add Freon while the car is running and the air conditioning is turned all the way on.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Follow the instructions on the can of Freon that you purchased.",
+			"image": "BM02.gif"
+		},
+		{
+			"text": "If you suspect that you have a leak, you may want to try using a can of Freon with stop-leak and dye in it.",
+			"image": "BM01.gif"
+		}]
+	}]
+},
+{
+	"title": "Air Filter",
+	"icon": "BM107.gif",
+	"content": [{
+		"title": "Cleaning/Replacing Air Filter",
+		"content": [{
+			"text": "Things you will need: Vacuum",
+			"image": "BM106.gif"
+		},
+		{
+			"text": "Locate the air filter.",
+			"image": "BM55.gif"
+		},
+		{
+			"text": "Open the casing and pull the filter out.",
+			"image": "BM55.gif"
+		},
+		{
+			"text": "Vacuum the gunk out of the filter if you are just cleaning it. Replace it if it needs to be replaced.",
+			"image": "BM106.gif"
+		},
+		{
+			"text": "You can purchase the correct filter for your vehicle from an auto store or a dealership.",
+			"image": "BM107.gif"
+		}]
+	}]
+},
+{
+	"title": "Brake Fluid",
+	"icon": "BM04.gif",
+	"content": [{
+		"title": "Checking/Adding Fluid",
+		"content": [{
+			"text": "Things you will need: Funnel, Brake Fluid",
+			"image": "BM04.gif"
+		},
+		{
+			"text": "Check the brake fluid with the engine off.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Locate the brake fluid reservoir. Newer cars have clear reservoirs.",
+			"image": "BM16.gif"
+		},
+		{
+			"text": "Fill the reservoir to the fill line. If the reservoir is more than half empty, take the car to a mechanic. There are problems with your brakes.",
+			"image": "BM56.gif"
+		}]
+	}]
+},
+{
+	"title": "Car Jacks",
+	"icon": "BM120.gif",
+	"content": [{
+		"title": "Basic Info",
+		"icon": "BM115.gif",
+		"inapp": true,
+		"content": [{
+			"text": "Do not jack up a car on uneven ground! The car may fall off of the jack and cause serious injury.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Check your owner’s manual to see where you should place your jack.",
+			"image": "BM113.gif"
+		},
+		{
+			"text": "Newer vehicles sometimes have a designated place near the wheel-well. These can be identified by special markings, cuts in the molding, bumps in the molding, or even holes in the frame.",
+			"image": "BM111.gif"
+		},
+		{
+			"text": "Older vehicles are generally jacked up by their frame.",
+			"image": "BM114.gif"
+		},
+		{
+			"text": "Or by their differential.",
+			"image": "BM112.gif"
+		}]
+	},
+	{
+		"title": "Scissor Jacks",
+		"icon": "BM121.gif",
+		"inapp": true,
+		"content": [{
+			"text": "These jacks are commonly referred to as knucklebusters. You’ll know why once you’ve used them. Some of them have a built-in handle, and some of them require you to use the tire iron that you took the lug nuts off with.",
+			"image": "BM120.gif"
+		},
+		{
+			"text": "Before placing the jack in position, get it started by turning the nut clockwise. Raise the jack high enough that it will almost be touching the point of contact on the car. Then place it in position.",
+			"image": "BM121.gif"
+		},
+		{
+			"text": "Raise the car until the tire is completely off the ground.",
+			"image": "BM104.gif"
+		},
+		{
+			"text": "When you have replaced the tire, let the car back down by turning the nut counter-clockwise.",
+			"image": "BM105.gif"
+		}]
+	},
+	{
+		"title": "Hydraulic Jacks",
+		"icon": "BM115.gif",
+		"inapp": true,
+		"content": [{
+			"text": "This is a hydraulic jack.",
+			"image": "BM115.gif"
+		},
+		{
+			"text": "Place the jack underneath the contact point. Take the handle of the jack and place it over the key at the bottom of the jack. Turn the key clockwise until it stops turning. DO NOT FORCE IT.",
+			"image": "BM116.gif"
+		},
+		{
+			"text": "Place the handle of the jack in this slot, and lift your end of the handle until it will not go any higher. Then lower the handle until it will not go any lower. After ensuring that the jack has been correctly placed, repeat until the tire is completely off of the ground.",
+			"image": "BM117.gif"
+		},
+		{
+			"text": "Once the tire has been replaced, place the handle over the key again. SLOWLY turn counter-clockwise. The jack will begin to let the vehicle down. If you turn too quickly the vehicle will come crashing down.",
+			"image": "BM116.gif"
+		}]
+	},
+	{
+		"title": "Small Floor Jacks",
+		"icon": "BM123.gif",
+		"inapp": true,
+		"content": [{
+			"text": "This is a small floor jack.",
+			"image": "BM123.gif"
+		},
+		{
+			"text": "Place the jack underneath the contact point. Take the handle of the jack and place it over the key at the bottom of the jack. Turn the key clockwise until it stops turning. DO NOT FORCE IT.",
+			"image": "BM124.gif"
+		},
+		{
+			"text": "Place the handle of the jack in this slot, and lift your end of the handle until it will not go any higher. Then lower the handle until it will not go any lower. After ensuring that the jack has been correctly placed, repeat until the tire is completely off of the ground.",
+			"image": "BM124A.gif"
+		},
+		{
+			"text": "Once the tire has been replaced, place the handle over the key again. SLOWLY turn counter-clockwise. The jack will begin to let the vehicle down. If you turn too quickly the vehicle will come crashing down.",
+			"image": "BM124.gif"
+		}]
+	},
+	{
+		"title": "Big Floor Jacks",
+		"icon": "BM118.gif",
+		"inapp": true,
+		"content": [{
+			"text": "This is a big floor jack.",
+			"image": "BM118.gif"
+		},
+		{
+			"text": "Place the jack underneath the contact point. Take the knob on the handle of the jack and turn clockwise until it stops turning. DO NOT FORCE IT.",
+			"image": "BM119.gif"
+		},
+		{
+			"text": "Lower the handle until it will not go any lower. Then lift the handle until it will not go any higher. After ensuring that the jack has been correctly placed, repeat until the tire is completely off of the ground.",
+			"image": "BM118.gif"
+		},
+		{
+			"text": "Once the tire has been replaced, SLOWLY turn the handle counter-clockwise. The jack will begin to let the vehicle down. If you turn too quickly the vehicle will come crashing down.",
+			"image": "BM119.gif"
+		}]
+	},
+	{
+		"title": "Go to Changing a Tire section",
+		"icon": "BM42.gif",
+		"inapp": true,
+		"link": {
+			"Category": "Tires",
+			"SubCategory": "Changing a Tire",
+			"Page": 5
+		}
+	}]
+},
+{
+	"title": "Changing Spark Plugs",
+	"icon": "BM11.gif",
+	"content": [{
+		"title": "",
+		"content": [{
+			"text": "Things you will need: Spark Plugs, Spark Plug Socket, Socket Wrench",
+			"image": "BM11.gif"
+		},
+		{
+			"text": "Locate the spark plug wires. One end of them goes into a distributor (this is where all of the wires are clumped together.) The other end goes into each individual spark plug. This is the end that you will be dealing with.",
+			"image": "BM17.gif"
+		},
+		{
+			"text": "Pull only one wire off at a time. If the spark plug wires were to get mixed up then your car would not run properly, and may not start.",
+			"image": "BM52.gif"
+		},
+		{
+			"text": "Pull out the first spark plug. If you don’t have replacement plugs yet then take this plug to the auto parts store and show them your plug and they will get you the replacements that you need. You need to tell them how many plugs you want to buy. You find this out by counting the number of wires coming out of the distributor. It will either be 4, 6, or 8.",
+			"image": "BM11.gif"
+		},
+		{
+			"text": "Put the new plug in place of the old plug.",
+			"image": "BM11.gif"
+		},
+		{
+			"text": "Reattach the wire.",
+			"image": "BM51.gif"
+		},
+		{
+			"text": "Repeat the process until all plugs have been changed.",
+			"image": "BM101.jpg"
+		}]
+	}]
+},
+{
+	"title": "Coolant",
+	"icon": "BM05.gif",
+	"content": [{
+		"title": "Checking Coolant",
+		"content": [{
+			"text": "Things you will need: Funnel, Antifreeze – Check your owner’s manual to see what kind of Antifreeze your vehicle requires.",
+			"image": "BM05.gif"
+		},
+		{
+			"text": "Your coolant can be checked while the engine is running, but checking it cold is recommended, because you can’t add fluid while it is hot.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Locate the coolant reservoir",
+			"image": "BM18.gif"
+		},
+		{
+			"text": "On the side of the reservoir you will see a line marked warm and a line marked cool. The coolant should be at the cool line if the car has not been running. The coolant should be at the warm line if the car has been running.",
+			"image": "BM18.gif"
+		}]
+	},
+	{
+		"title": "Adding Coolant",
+		"inapp": true,
+		"content": [{
+			"text": "Do not mess with the coolant while the engine is hot! Severe burns can occur if you take the coolant lid off while it is hot.",
+			"image": "BM19.gif"
+		},
+		{
+			"text": "You should use 50/50-antifreeze/water. You can purchase coolant that is premixed.",
+			"image": "BM05.gif"
+		},
+		{
+			"text": "Remove the reservoir cap.",
+			"image": "BM18.gif"
+		},
+		{
+			"text": "Turn your car on.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Use a funnel to add coolant a little at a time. The car will periodically pull coolant out of the reservoir, and push it back in.",
+			"image": "BM22.gif"
+		}]
+	}]
+},
+{
+	"title": "Jumping The Battery",
+	"icon": "BM25.gif",
+	"content": [{
+		"title": "With Another Vehicle",
+		"content": [{
+			"text": "Things you will need: Jumper Cables",
+			"image": "BM06.gif"
+		},
+		{
+			"text": "Turn off the vehicle that you will be using as a power source.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Attach the red cable clamp to the positive battery terminal on both batteries. (Look specifically for the + sign, not just the red cable. Some cars have them switched)",
+			"image": "BM24.gif"
+		},
+		{
+			"text": "Attach the black cable clamp to the negative battery terminal on both batteries.",
+			"image": "BM25.gif"
+		},
+		{
+			"text": "Turn on the vehicle that you are using as a power source. Let it sit for a minute while it charges the dead battery.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Turn on the vehicle being jumped. If it will not start, but has some power, you may need to wait longer before trying to start it again. If there is nothing, try wiggling both red and black cables on both batteries, then let the vehicles sit again. If you still can’t start the vehicle with the dead battery, then you should take it out, and take it to an auto shop to be tested. They will tell you if it needs to be replaced or not.",
+			"image": "BM101.jpg"
+		}]
+	},
+	{
+		"title": "With a Jumper",
+		"inapp": true,
+		"content": [{
+			"text": "Make sure that the key is turned off.",
+			"image": "BM26.gif"
+		},
+		{
+			"text": "Make sure that the unit is completely turned off.",
+			"image": "BM27.gif"
+		},
+		{
+			"text": "Attach the positive cable to the positive battery terminal.",
+			"image": "BM24.gif"
+		},
+		{
+			"text": "Attach the negative cable to the negative battery terminal.",
+			"image": "BM25.gif"
+		},
+		{
+			"text": "Turn on the jumper.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Let it charge the battery for a minute. Then start the vehicle. If it will not start then go through this process again. Insure that your clamps are attached properly.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "If the vehicle won’t do anything, then you may need to take the battery out, and take it to an auto shop where they will tell you if it needs to be replaced or not.",
+			"image": "BM101.jpg"
+		}]
+	}]
+},
+{
+	"title": "Oil",
+	"icon": "BM08.gif",
+	"content": [{
+		"title": "Checking Oil",
+		"content": [{
+			"text": "Check your oil with the engine off.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Locate the Oil Dipstick. In newer cars it is generally yellow.",
+			"image": "BM28.gif"
+		},
+		{
+			"text": "Pull the dipstick out, and use a rag to wipe all of the oil off of it.",
+			"image": "BM29.gif"
+		},
+		{
+			"text": "Dip it back where you pulled it from, and then pull it out again.",
+			"image": "BM28.gif"
+		},
+		{
+			"text": "Look at the bottom of the stick. If the line of oil is somewhere between the add mark and the full mark, then your oil level is fine.",
+			"image": "BM103.gif"
+		},
+		{
+			"text": "If the oil line is at the add mark then you need to add one quart of oil.",
+			"image": "BM103.gif"
+		},
+		{
+			"text": "If the oil line is below the add mark then you may need to add more than one quart.",
+			"image": "BM08.gif"
+		}]
+	},
+	{
+		"title": "Adding Oil",
+		"inapp": true,
+		"content": [{
+			"text": "Things you will need: Funnel, Rag, Oil – Check your owner’s manual to see what kind of oil your vehicle requires, and how often you should change it. Every vehicle is different.",
+			"image": "BM08.gif"
+		},
+		{
+			"text": "Add oil with the engine off.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Locate and remove the oil cap. It is usually close to the oil dipstick, and is usually marked.",
+			"image": "BM33.gif"
+		},
+		{
+			"text": "Place a funnel in the hole so that you minimize the amount of oil spilt on the engine.",
+			"image": "BM32.gif"
+		},
+		{
+			"text": "Poor in the desired amount of oil. If you are unsure about how much to poor in then check the oil level periodically.",
+			"image": "BM101.jpg"
+		}]
+	}]
+},
+{
+	"title": "Power Steering",
+	"icon": "BM09.gif",
+	"content": [{
+		"title": "Checking Power Steering Fluid",
+		"content": [{
+			"text": "Check your power steering levels with the engine running.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "Some vehicles allow you to check the power steering fluid by looking at a clear reservoir while others require you to use a dipstick.",
+			"image": "BM34.gif"
+		},
+		{
+			"text": "Vehicles that allow you to look at the level through the reservoir are self-explanatory. If the level is below the full mark then you need to add fluid.",
+			"image": "BM58.gif"
+		},
+		{
+			"text": "On Vehicles that require you to use a dipstick, pull off the cap, which has the dipstick in it.",
+			"image": "BM34.gif"
+		},
+		{
+			"text": "Wipe off the dipstick.",
+			"image": "BM35.gif"
+		},
+		{
+			"text": "Put the cap back on.",
+			"image": "BM34.gif"
+		},
+		{
+			"text": "Pull the cap off, and look at the level on the dipstick. If the level is below the full mark then you need to add fluid.",
+			"image": "BM35.gif"
+		}]
+	},
+	{
+		"title": "Adding Power Steering Fluid",
+		"inapp": true,
+		"content": [{
+			"text": "Things you will need: Funnel, Rag, Power Steering Fluid – Check your owner’s manual to see what kind of power steering your vehicle requires.",
+			"image": "BM09.gif"
+		},
+		{
+			"text": "Add power steering fluid while the engine is running. You may use ATF in a pinch, but power steering fluid is recommended.",
+			"image": "BM53.gif"
+		},
+		{
+			"text": "Remove the cap to the power steering fluid reservoir.",
+			"image": "BM34.gif"
+		},
+		{
+			"text": "Use a funnel to poor small amounts of fluid in at a time.",
+			"image": "BM36.gif"
+		},
+		{
+			"text": "Check the level, add more if needed.",
+			"image": "BM35.gif"
+		}]
+	}]
+},
+{
+	"title": "Tires",
+	"icon": "BM46.gif",
+	"content": [{
+		"title": "Adding Air",
+		"content": [{
+			"text": "Things you will need: Tire Gauge, Air Pump or Compressor",
+			"image": "BM13.gif"
+		},
+		{
+			"text": "Most tires call for a PSI of 35. Check the text on the outside of your tire to see what the recommended pressure is for your tire.",
+			"image": "BM37.gif"
+		},
+		{
+			"text": "Remove the stem cap from the stem of your tire.",
+			"image": "BM38.gif"
+		},
+		{
+			"text": "Press your tire pressure gage evenly against the end of the stem. If you can hear air escaping then it is not even.",
+			"image": "BM39.gif"
+		},
+		{
+			"text": "Read the numbers on your gage. If you are above the recommended pressure then release a little air by pressing the nipple inside the stem. Do this in short bursts.",
+			"image": "BM40.gif"
+		},
+		{
+			"text": "If you are below the recommended pressure then add air a little at a time.",
+			"image": "BM40.gif"
+		},
+		{
+			"text": "Use a compressor, found at most gas stations, by pressing it against the stem just like you did the pressure gauge.",
+			"image": "BM50.gif"
+		}]
+	},
+	{
+		"title": "Changing a Tire",
+		"inapp": true,
+		"content": [{
+			"text": "Things you will need: Tire Iron or Star Wrench, Car Jack, Spare Tire",
+			"image": "BM42.gif"
+		},
+		{
+			"text": "Get your spare tire and all other tools out of the car before proceeding. You do not want to be getting in and out of the car once you start.",
+			"image": "BM101.jpg"
+		},
+		{
+			"text": "If your wheel has a hub-cap on it then you will need to remove it. All hub caps are different, and have different removal methods. If it is a factory cap then instructions should be in your owner’s manual.",
+			"image": "BM46.gif"
+		},
+		{
+			"text": "While your car is on the ground, use a tire iron or a star wrench to loosen your lug nuts. Do not take them all of the way off.",
+			"image": "BM49.gif"
+		},
+		{
+			"text": "Jack your car up. Most cars come with a scissor jack. Place the jack under the frame of the car. Some jacks are made for your car, and have specific places where they should be placed. Consult your owner’s manual before using your jack.",
+			"image": "BM44.gif",
+			"link": {
+				"linkText": "Car Jacks",
+				"linkCategory": "Car Jacks"
+			}
+		},
+		{
+			"text": "Once your car is up high enough that the tire is off the ground you can take off all of the lug nuts and then the tire.",
+			"image": "BM104.gif"
+		},
+		{
+			"text": "Put the spare tire on, and barely put all of the lug nuts on.",
+			"image": "BM102.gif"
+		},
+		{
+			"text": "With the tire pressed as far on as it will go, begin tightening (but not completely) all of the lug nuts. From wherever you start, skip the next lug nut. I.E. go from 1 to 3 to 5 to 2 to 4. This will put the tire on evenly.",
+			"image": "BM43.gif"
+		},
+		{
+			"text": "Once the lug nuts are mostly tightened let the car down onto the tire.",
+			"image": "BM105.gif"
+		},
+		{
+			"text": "Remove the jack, and then tighten all of the lug nuts as tight as you can, following the sequence described above.",
+			"image": "BM43.gif"
+		}]
+	}]
+},
+{
+	"title": "Wiper Fluid",
+	"icon": "BM12.gif",
+	"content": [{
+		"title": "Checking/Adding Wiper Fluid",
+		"content": [{
+			"text": "Things you will need: Funnel",
+			"image": "BM12.gif"
+		},
+		{
+			"text": "Locate the wiper fluid reservoir. (It may or may not be in the engine compartment)",
+			"image": "BM45.gif"
+		},
+		{
+			"text": "It does not require a certain amount of fluid. If the reservoir isn’t full, feel free to fill it.",
+			"image": "BM12.gif"
+		}]
+	}]
+},
+{
+    "title": "Share through Facebook",
+    "icon": "Facebook.jpg",
+    "facebook": "this is some text"
+},
+{
+    "title": "Share through Twitter",
+    "icon": "Twitter.jpg",
+    "twitter": "this is some text"
+},
+{
+    "title": "TenacityApp.com",
+    "icon": "TenacityApp.jpg",
+    "website": "http://www.google.com"
+}]

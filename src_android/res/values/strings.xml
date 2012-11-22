@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, MobileMechanicActivity!</string>
+    <string name="app_name">MobileMechanic</string>
+    <string name="main_btn">Start</string>
+    <string name="facebook_app_id">130593330423996</string>
+    <string name="admob_id">a15073ab5c28634</string>
+
+</resources>
