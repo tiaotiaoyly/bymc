@@ -3,8 +3,12 @@ package com.bspif.app.mobilemechanic;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.ads.AdView;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,6 +36,7 @@ public class LessonActivity extends Activity implements OnClickListener{
 	private ViewPager pager = null;
 	private ArrayList<View> pagesList = null;
 	private PopupWindow mCurrentPopupWindow = null;
+	private ViewGroup contentView = null;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,8 +44,11 @@ public class LessonActivity extends Activity implements OnClickListener{
 		Intent intent = this.getIntent();
 		int catID = intent.getExtras().getInt("catID");
 		int lessonID = intent.getExtras().getInt("lessonID");
+		int page = intent.getExtras().getInt("page");
+		if (page == 0) page = 1;
 		catData = AppData.getCategory(catID);
 		lessonData = catData.getLesson(lessonID);
+		
 		String title = lessonData.title;
 		if (title.equals("")) {
 			title = catData.title;
@@ -49,6 +57,7 @@ public class LessonActivity extends Activity implements OnClickListener{
 		pager = new ViewPager(this);
 		pager.setAdapter(new Adapter());
 		
+		
 		pagesList = new ArrayList<View>();
 		LayoutInflater inflater = this.getLayoutInflater();
 		for (int i = 0; i < lessonData.pages.length; i++) {
@@ -56,18 +65,40 @@ public class LessonActivity extends Activity implements OnClickListener{
 			TextView tv = (TextView) pageView.findViewById(R.id.textView1);
 			tv.setText(lessonData.pages[i].text);
 			ImageView iv = (ImageView) pageView.findViewById(R.id.imageButton1);
+			String imgFilename = lessonData.pages[i].image;
 			try {
-				iv.setImageBitmap(Util.getBitmapFromAsset(this, lessonData.pages[i].image));
+				// auto load image from sdcard
+				String hdImgPath = Global.HD_IMAEG_DIR.concat("/" + imgFilename);
+				Bitmap bmp = Util.getBitmapFromSDCard(this, hdImgPath);
+				if (null == bmp) {
+					bmp = Util.getBitmapFromAsset(this, imgFilename);
+				}
+				iv.setImageBitmap(bmp);
 				//iv.setLayoutParams(new LayoutParams(150, 100));
 				iv.setId(i);
 				iv.setOnClickListener(this);
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e(TAG, "Load bitmap failed, %d, %s, %s", i, imgFilename, e);
 			}
 			pagesList.add(pageView);
 		}
-		
-		this.setContentView(pager);
+		pager.setCurrentItem(page - 1);
+		contentView = pager;
+		this.setContentView(contentView);
+	}
+	
+    @Override
+	protected void onPause() {
+    	//ad view
+		//AdView adView = Global.instance.getAdView();
+		//contentView.addView(adView);
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		//contentView.removeView(Global.instance.getAdView());
+		super.onResume();
 	}
 	
 	@Override
@@ -79,6 +110,16 @@ public class LessonActivity extends Activity implements OnClickListener{
 		super.onDestroy();
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {  
+        super.onConfigurationChanged(newConfig);  
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {  
+                // land do nothing is ok  
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {  
+                // port do nothing is ok  
+        }  
+	}
+	
 	private class Adapter extends PagerAdapter {
 
 		@Override

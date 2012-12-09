@@ -13,10 +13,13 @@ import android.content.Context;
 public class AppData {
 	
 	private static final String CAT_TITLE		= "title";
+	private static final String CAT_ICON		= "icon";
 	private static final String CAT_LESSONS 	= "content";
 	private static final String LESSON_TITLE	= "title";
 	private static final String LESSON_PAGES	= "content";
 	private static final String LESSON_LINK		= "link";
+	private static final String LESSON_INAPP	= "inapp";
+	private static final String LESSON_ICON		= "icon";
 	private static final String PAGE_IMAGE		= "image";
 	private static final String PAGE_TEXT		= "text";
 	private static final String LINK_CAT		= "Category";
@@ -29,6 +32,7 @@ public class AppData {
 	public static CategoryData[] categories = null;
 	public static String[] catNames = null;
 	public static boolean isInited = false;
+	public static boolean isPurchased = false;	// TODO
 	
 	private AppData() {
 	}
@@ -82,11 +86,21 @@ public class AppData {
 		return catNames;
 	}
 	
+	public static int findCategoryByTitle(String title) {
+		for (int i = 0; i < categories.length; i++) {
+			if (null != categories[i] && categories[i].title.equals(title)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	/////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////
 	
 	public static class CategoryData {
 		public String title = "";
+		public String icon = "";
 		public LessonData[] lessons = null;
 		public String[] lessonTitles = null;
 		public String website = null;
@@ -111,6 +125,9 @@ public class AppData {
 			} else if (json.has(TWITTER)) {
 				twitter = json.getString(TWITTER);
 			}
+			if (json.has(CAT_ICON)) {
+				icon = json.getString(CAT_ICON);
+			}
 		}
 		
 		public String[] getTitles() {
@@ -130,6 +147,15 @@ public class AppData {
 		public LessonData getLesson(int index) {
 			return lessons[index];
 		}
+		
+		public int findLessonByTitle(String title) {
+			for (int i = 0; i < lessons.length; i++) {
+				if (null != lessons[i] && lessons[i].title.equals(title)) {
+					return i;
+				}
+			}
+			return -1;
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////////////
@@ -138,6 +164,7 @@ public class AppData {
 		public String title = "";
 		public PageData[] pages = null;
 		public LinkData link = null;
+		public String icon = null;
 		public boolean isInAppBilling = false;
 		
 		LessonData(JSONObject json) throws JSONException {
@@ -155,10 +182,20 @@ public class AppData {
 			} else {
 				assert(false);
 			}
+			if (json.has(LESSON_INAPP)) {
+				isInAppBilling = json.getBoolean(LESSON_INAPP);
+			}
+			if (json.has(LESSON_ICON)) {
+				icon = json.getString(LESSON_ICON);
+			}
 		}
 		
 		public PageData getPage(int index) {
 			return pages[index];
+		}
+		
+		public boolean canAccess() {
+			return !isInAppBilling || AppData.isPurchased; 
 		}
 	}
 	

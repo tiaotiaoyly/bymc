@@ -1,5 +1,8 @@
 package com.bspif.app.mobilemechanic;
 
+import java.io.IOException;
+
+import com.bspif.app.mobilemechanic.AppData.CategoryData;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
@@ -14,55 +17,121 @@ import com.google.ads.AdView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-public class CategoryListActivity extends Activity implements OnItemClickListener, AdListener {
+public class CategoryListActivity extends Activity implements OnItemClickListener {
 
-	private static final String TAG = "CatList"; 
+	private static final String TAG = "CatList";
+	private ViewGroup contentView = null;
 	
-	@SuppressWarnings("deprecation")
+	private class CategoryListItemAdapter extends BaseAdapter {
+		private LayoutInflater inflater = null;
+		private View[] items = null;
+
+		public CategoryListItemAdapter(Context context) {
+			super();
+			inflater = LayoutInflater.from(context);
+			items = new View[AppData.categories.length];
+			for (int i = 0; i < AppData.categories.length; i++) {
+				CategoryData catData = AppData.getCategory(i);
+				View item = inflater.inflate(R.layout.cat_list_item, null);
+				TextView titleView = (TextView) item.findViewById(R.id.title);
+				ImageView iconView = (ImageView) item.findViewById(R.id.icon);
+				titleView.setText(catData.title);
+				try {
+					Bitmap iconBmp = Util.getBitmapFromAsset(context, catData.icon);
+					iconView.setImageBitmap(iconBmp);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				items[i] = item;
+			}
+		}
+		
+		public int getCount() {
+			return AppData.categories.length;
+		}
+
+		public Object getItem(int position) {
+			return position;
+		}
+
+		public long getItemId(int position) {
+			return position;
+		}
+
+		public View getView(int position, View convertView, ViewGroup parent) {
+			return items[position];
+		}
+		
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setTitle("Category view");
 		
-		String[] catNames = AppData.getTitles();
-		ArrayAdapter<String> ad = new ArrayAdapter<String>(this, R.layout.cat_list_item, catNames);
-		
-		String admobID = this.getResources().getString(R.string.admob_id);
-        AdView adview = new AdView(this, AdSize.BANNER, admobID);
-        AdRequest adreq = new AdRequest();
-        adreq.setTesting(true);
-        //adview.loadAd(adreq);
-		adview.setAdListener(this);
-		RelativeLayout.LayoutParams adParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-		adParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		adview.setLayoutParams(adParam);
-		adview.setId(12);
+		// ad view
+        AdView adview = Global.instance.getAdView();
         
+		// list view
 		ListView lv = new ListView(this);
+		CategoryListItemAdapter ad = new CategoryListItemAdapter(this); 
 		lv.setAdapter(ad);
 		lv.setOnItemClickListener(this);
 		RelativeLayout.LayoutParams lvParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		lvParam.addRule(RelativeLayout.ABOVE, adview.getId());
 		lv.setLayoutParams(lvParam);
 		
+		// add views
 		RelativeLayout layout = new RelativeLayout(this);
 		layout.addView(lv);
-		layout.addView(adview);
-		setContentView(layout);
+		//layout.addView(adview);
+		contentView = layout;
+		setContentView(contentView);
+	}
+
+	@Override
+	protected void onResume() {
+		AdView adView = Global.instance.getAdView();
+		contentView.addView(adView);
+		super.onResume();
+	}
+	
+    @Override
+	protected void onPause() {
+    	AdView adView = Global.instance.getAdView();
+    	contentView.removeView(adView);
+		super.onPause();
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {  
+        super.onConfigurationChanged(newConfig);  
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {  
+                // land do nothing is ok  
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {  
+                // port do nothing is ok  
+        }  
 	}
 	
 	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
@@ -121,25 +190,4 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 		intent.putExtra("catID", index);
 		startActivity(intent);
 	}
-
-	public void onDismissScreen(Ad arg0) {
-		Log.d(TAG, "onDismissScreen");
-	}
-
-	public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
-		Log.d(TAG, "onFailedToReceiveAd");
-	}
-
-	public void onLeaveApplication(Ad arg0) {
-		Log.d(TAG, "onLeaveApplication");
-	}
-
-	public void onPresentScreen(Ad arg0) {
-		Log.d(TAG, "onReceiveAd");
-	}
-
-	public void onReceiveAd(Ad arg0) {
-		Log.d(TAG, "onReceiveAd");
-	}
-
 }
