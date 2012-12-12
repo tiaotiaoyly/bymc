@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -88,7 +89,8 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setTitle("Category view");
+		this.setTitle(R.string.category_activity_title);
+		//this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		// ad view
         AdView adview = Global.instance.getAdView();

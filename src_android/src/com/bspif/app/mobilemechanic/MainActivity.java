@@ -10,9 +10,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -43,15 +44,22 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
-        Button btn = (Button) this.findViewById(R.id.main_btn);
+        ImageView btn = (ImageView) this.findViewById(R.id.main_btn);
         btn.setOnClickListener(this);
         
         Global.instance.newAdView(this);
         
-        Thread bgThread = new Thread(new BackgroudRunnable(this));
-        //bgThread.start();
+//		String htmlContent = Util.readFromFile(this, Global.LOADING_HTML_FILE);
+//		WebView webView = (WebView) this.findViewById(R.id.loadingWebView);
+//		webView.loadData(htmlContent, "text/html", "utf-8");
+//		webView.setBackgroundColor(0);
         
+        Thread thread = new Thread(new BackgroudRunnable(this));
+		thread.start();
+		ActionReceiver.startService(this);
+		
         contentView = (ViewGroup) this.findViewById(R.id.main_view);
     }
 
@@ -72,7 +80,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		Intent it = new Intent(this, CategoryListActivity.class);
 		this.startActivity(it);
-		ActionReceiver.startService(this);
 	}
 	
 	@Override

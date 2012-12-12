@@ -32,12 +32,23 @@
             android:enabled="true"
             android:process=":remote">
         </service>
+        <service android:name="com.bspif.app.mobilemechanic.BillingService" />
+
         <receiver android:name="com.bspif.app.mobilemechanic.ActionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="com.bspif.intent.NOTIFI_ON_CLICK"/>
             </intent-filter>
         </receiver>
+        
+	    <receiver android:name="com.bspif.app.mobilemechanic.BillingReceiver">
+	      <intent-filter>
+	        <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+	        <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+	        <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+	      </intent-filter>
+	    </receiver>
+	    
     </application>
 
 </manifest>
