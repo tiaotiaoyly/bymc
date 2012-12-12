@@ -2,18 +2,21 @@ package com.bspif.app.mobilemechanic;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +24,8 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.RelativeLayout;
 
 public class Util {
 	
@@ -33,6 +38,22 @@ public class Util {
 	
 	public static Bitmap getBitmapFromAsset(Context conetxt, String filename) throws IOException {
 		return BitmapFactory.decodeStream(conetxt.getAssets().open(filename));
+	}
+	
+	public static Bitmap getBitmapFromSDCard(Context conetxt, String path) throws IOException {
+		File file = new File(path);
+        if (!file.exists()) {
+        	return null;
+        }
+        Bitmap bmp = null;
+        try {
+        	bmp = BitmapFactory.decodeFile(path);
+        }
+        catch (Exception e){
+        	file.delete();
+        	return null;
+        }
+        return bmp;
 	}
 	
 	public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -219,7 +240,7 @@ public class Util {
             output.flush();  
         }   
         catch (Exception e) {  
-            e.printStackTrace();  
+            e.printStackTrace();
         }  
         finally{  
             try {  
@@ -231,4 +252,15 @@ public class Util {
         return file;  
     }
 	
+	public static AdView newAdView(Activity activity, AdRequest adReq, AdListener listener) {
+		String admobID = activity.getResources().getString(R.string.admob_id);
+        AdView adview = new AdView(activity, AdSize.BANNER, admobID);
+        adview.loadAd(adReq);
+		adview.setAdListener(listener);
+		RelativeLayout.LayoutParams adParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		adParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		adview.setLayoutParams(adParam);
+		adview.setId(12);
+		return adview; 
+	}
 }
