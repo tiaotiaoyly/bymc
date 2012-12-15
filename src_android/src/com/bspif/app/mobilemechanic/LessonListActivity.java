@@ -195,7 +195,11 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 	}
 
 	public void onClick(DialogInterface dialog, int which) {
-		Toast.makeText(this, "TODO InAppBilling", Toast.LENGTH_LONG).show();
+		if (!Global.instance.billingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)) {
+			Toast.makeText(this, "In App Billing NOT Supported", Toast.LENGTH_LONG).show();
+			return;
+		}
+		Global.instance.billingService.requestPurchase("", Consts.ITEM_TYPE_INAPP, null);
 	}
 
 }

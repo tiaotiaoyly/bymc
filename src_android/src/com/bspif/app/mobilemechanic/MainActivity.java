@@ -61,6 +61,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		ActionReceiver.startService(this);
 		
         contentView = (ViewGroup) this.findViewById(R.id.main_view);
+        Global.instance.initBilling(this);
     }
 
 	@Override
