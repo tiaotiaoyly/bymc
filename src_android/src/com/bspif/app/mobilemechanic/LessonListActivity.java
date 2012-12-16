@@ -2,6 +2,15 @@ package com.bspif.app.mobilemechanic;
 
 import java.io.IOException;
 
+import org.json.JSONException;
+
+import net.robotmedia.billing.BillingController;
+import net.robotmedia.billing.BillingController.IConfiguration;
+import net.robotmedia.billing.BillingRequest.ResponseCode;
+import net.robotmedia.billing.helper.AbstractBillingActivity;
+import net.robotmedia.billing.helper.AbstractBillingObserver;
+import net.robotmedia.billing.model.Transaction.PurchaseState;
+
 import com.bspif.app.mobilemechanic.AppData.CategoryData;
 import com.bspif.app.mobilemechanic.AppData.LessonData;
 import com.google.ads.Ad;
@@ -19,7 +28,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +43,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LessonListActivity extends Activity implements OnItemClickListener, OnClickListener {
+public class LessonListActivity extends Activity implements OnItemClickListener, IConfiguration {
 
 	private static final String TAG = "SubCat";
 	private int catID = -1;
 	private AppData.CategoryData catData = null;
 	private ViewGroup contentView = null;
 	private ListView listView = null;
+	private AbstractBillingObserver mBillingObserver;
+	private boolean mRequestingBilling = false;
+	private LessonListItemAdapter mLessonListAdapter = null;
 	
 	private class LessonListItemAdapter extends BaseAdapter {
 		private LayoutInflater inflater = null;
@@ -73,6 +85,19 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 			}
 		}
 		
+		public void update() {
+			items = new View[catData.lessons.length];
+			View item = null;
+			for (int i = 0; i < catData.lessons.length; i++) {
+				item = items[i];
+				LessonData lessonData = catData.getLesson(i);
+				TextView titleView = (TextView) item.findViewById(R.id.title);
+				if (!lessonData.canAccess()) {
+					titleView.setTextColor(Color.RED);
+				}
+			}
+		}
+		
 		public int getCount() {
 			return catData.getTitles().length;
 		}
@@ -88,7 +113,6 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		public View getView(int position, View convertView, ViewGroup parent) {
 			return items[position];
 		}
-		
 	}
 	
 	@Override
@@ -106,9 +130,9 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		// list view
 		//String[] titles = catData.getTitles();
 		//ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.art_list_item, titles);
-		BaseAdapter adapter = new LessonListItemAdapter(this);
+		mLessonListAdapter = new LessonListItemAdapter(this);
 		listView = new ListView(this);
-		listView.setAdapter(adapter);
+		listView.setAdapter(mLessonListAdapter);
 		listView.setOnItemClickListener(this);
 		RelativeLayout.LayoutParams lvParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		lvParam.addRule(RelativeLayout.ABOVE, adView.getId());
@@ -120,6 +144,8 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		//layout.addView(adView);
 		contentView = layout;
 		this.setContentView(contentView);
+		
+		initBilling();
 	}
 
 	@Override
@@ -158,13 +184,18 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Lesson locked");
 			builder.setMessage("Buy full version?");
-			builder.setPositiveButton("Yes", this);
+			builder.setPositiveButton("Yes", new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mRequestingBilling = true;
+					BillingController.checkBillingSupported(LessonListActivity.this);	// purchase	
+				}
+			});
 			builder.setNegativeButton("Later", null);
 			builder.show();
 			return;
 		}
 		
-		// TODO lesson link
 		if (null != lessonData.link) {
 			
 			int cID = AppData.findCategoryByTitle(lessonData.link.category);
@@ -193,13 +224,115 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		intent.putExtra("lessonID", index);
 		this.startActivity(intent);
 	}
-
-	public void onClick(DialogInterface dialog, int which) {
-		if (!Global.instance.billingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)) {
-			Toast.makeText(this, "In App Billing NOT Supported", Toast.LENGTH_LONG).show();
-			return;
+	
+	protected void onPurchased() {
+		String purchaseStatus = Global.instance.getPurchasedHashKay(this);
+		try {
+			Global.instance.mJsonData.put(Global.JSON_DATA_PURCHASE_STATE_KEY, purchaseStatus);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		Global.instance.billingService.requestPurchase("", Consts.ITEM_TYPE_INAPP, null);
+		Global.instance.saveData(this);
+		AppData.isPurchased = true;
+		mLessonListAdapter.update();
+	}
+	
+	protected void onRefund() {
+		try {
+			Global.instance.mJsonData.put(Global.JSON_DATA_PURCHASE_STATE_KEY, null);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Global.instance.saveData(this);
+		AppData.isPurchased = false;
+		mLessonListAdapter.update();
 	}
 
+	@Override
+	public byte[] getObfuscationSalt() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPublicKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	protected void initBilling() {
+		mBillingObserver = new AbstractBillingObserver(this) {
+
+			public void onBillingChecked(boolean supported) {
+				Log.i(TAG, "onBillingChecked %s", supported);
+				if (!mRequestingBilling) {
+					return;
+				}
+				if (!supported) {
+					Toast.makeText(LessonListActivity.this, R.string.inapp_not_supported, Toast.LENGTH_LONG).show();
+					mRequestingBilling = false;
+					return;
+				} else {
+					// request purchase
+					String itemId = LessonListActivity.this.getResources().getString(R.string.inapp_item_unlock);
+					BillingController.requestPurchase(LessonListActivity.this, itemId);
+				}
+			}
+			
+			public void onSubscriptionChecked(boolean supported) {
+				Log.i(TAG, "onSubscriptionChecked %s", supported);
+				// DO NOTHING
+			}
+
+			public void onPurchaseStateChanged(String itemId, PurchaseState state) {
+				Log.i(TAG, "onPurchaseStateChanged %s, %d", itemId, state);
+				if (state == PurchaseState.PURCHASED) {
+					onPurchased();
+				} else if (state == PurchaseState.CANCELLED) {
+					// DO NOTHING
+				} else if (state == PurchaseState.REFUNDED) {
+					onRefund();
+				} else if (state == PurchaseState.EXPIRED) {
+					// NERVER HAPPEN
+				} else {
+					// DO NOTHING
+				}
+				//mRequestingBilling = false;
+			}
+
+			public void onRequestPurchaseResponse(String itemId, ResponseCode response) {
+				Log.i(TAG, "onRequestPurchaseResponse %s, %d", itemId, response);
+				mRequestingBilling = false;
+				if (response == ResponseCode.RESULT_OK || response == ResponseCode.RESULT_USER_CANCELED) {
+					// DO NOTHING
+					return;
+				}
+				if (response == ResponseCode.RESULT_BILLING_UNAVAILABLE) {
+					Toast.makeText(LessonListActivity.this, "ERROR: Billing unavailable", Toast.LENGTH_LONG).show();
+				}
+				if (response == ResponseCode.RESULT_ITEM_UNAVAILABLE) {
+					Toast.makeText(LessonListActivity.this, "ERROR: Item unavailable", Toast.LENGTH_LONG).show();
+				}
+				if (response == ResponseCode.RESULT_SERVICE_UNAVAILABLE) {
+					Toast.makeText(LessonListActivity.this, "ERROR: Sever unavailable", Toast.LENGTH_LONG).show();
+				}
+				if (response == ResponseCode.RESULT_ERROR || response == ResponseCode.RESULT_DEVELOPER_ERROR) {
+					Toast.makeText(LessonListActivity.this, "ERROR: Purchase falied", Toast.LENGTH_LONG).show();
+				}
+			}
+		};
+		BillingController.registerObserver(mBillingObserver);
+		BillingController.setConfiguration(this); // This activity will provide
+		// the public key and salt
+		//BillingController.checkBillingSupported(this);
+		if (!mBillingObserver.isTransactionsRestored()) {	// TODO
+			BillingController.restoreTransactions(this);
+		}
+	}
+	
+	protected void uninitBilling() {
+		BillingController.unregisterObserver(mBillingObserver);
+		BillingController.setConfiguration(null);
+	}
+	
 }

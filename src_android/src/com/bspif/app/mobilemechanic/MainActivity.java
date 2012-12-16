@@ -50,6 +50,7 @@ public class MainActivity extends Activity implements OnClickListener {
         btn.setOnClickListener(this);
         
         Global.instance.newAdView(this);
+        Global.instance.loadData(this);
         
 //		String htmlContent = Util.readFromFile(this, Global.LOADING_HTML_FILE);
 //		WebView webView = (WebView) this.findViewById(R.id.loadingWebView);
@@ -61,7 +62,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		ActionReceiver.startService(this);
 		
         contentView = (ViewGroup) this.findViewById(R.id.main_view);
-        Global.instance.initBilling(this);
     }
 
 	@Override

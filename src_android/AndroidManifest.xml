@@ -40,15 +40,14 @@
                 <action android:name="com.bspif.intent.NOTIFI_ON_CLICK"/>
             </intent-filter>
         </receiver>
-        
-	    <receiver android:name="com.bspif.app.mobilemechanic.BillingReceiver">
-	      <intent-filter>
-	        <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
-	        <action android:name="com.android.vending.billing.RESPONSE_CODE" />
-	        <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
-	      </intent-filter>
-	    </receiver>
-	    
+        <service android:name="net.robotmedia.billing.BillingService" />
+		<receiver android:name="net.robotmedia.billing.BillingReceiver">
+		    <intent-filter>
+		        <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+		        <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+		        <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+		    </intent-filter>
+		</receiver>
     </application>
 
 </manifest>

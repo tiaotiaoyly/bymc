@@ -1,16 +1,18 @@
 package com.bspif.app.mobilemechanic;
 
+import java.io.File;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 
-import com.bspif.app.mobilemechanic.BillingService.RequestPurchase;
-import com.bspif.app.mobilemechanic.BillingService.RestoreTransactions;
-import com.bspif.app.mobilemechanic.Consts.PurchaseState;
-import com.bspif.app.mobilemechanic.Consts.ResponseCode;
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
@@ -43,46 +45,7 @@ public class Global {
 			Log.d(TAG, "onReceiveAd");
 		}
 	}
-	
-	public class MyPurchaseObserver extends PurchaseObserver {
-		
-		private static final String TAG = "PurOb";
 
-		public MyPurchaseObserver(Activity activity, Handler handler) {
-			super(activity, handler);
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public void onBillingSupported(boolean supported, String type) {
-			// TODO Auto-generated method stub
-			Log.d(TAG, "onBillingSupported %s, type=%s", supported, type);
-		}
-
-		@Override
-		public void onPurchaseStateChange(PurchaseState purchaseState,
-				String itemId, int quantity, long purchaseTime,
-				String developerPayload) {
-			// TODO Auto-generated method stub
-			Log.d(TAG, "onPurchaseStateChange state=%d, item=%s, quantity=%d, time=%ld, payload=%s", purchaseState, itemId, quantity, purchaseTime, developerPayload);
-		}
-
-		@Override
-		public void onRequestPurchaseResponse(RequestPurchase request,
-				ResponseCode responseCode) {
-			// TODO Auto-generated method stub
-			Log.d(TAG, "onRequestPurchaseResponse id=%d, product=%s, type=%s, payload=%s, code=%d", request.mRequestId, request.mProductId, request.mProductType, request.mDeveloperPayload, responseCode);
-		}
-
-		@Override
-		public void onRestoreTransactionsResponse(RestoreTransactions request,
-				ResponseCode responseCode) {
-			// TODO Auto-generated method stub
-			Log.d(TAG, "onRestoreTransactionsResponse id=%d, code=%d", request.mRequestId, responseCode);
-		}
-		
-	}
-	
 	/////////////////////////////////////////////////
 	
 	public static final String SD_HOME = Environment.getExternalStorageDirectory().toString().concat("/.MobileMechanic");
@@ -90,6 +53,9 @@ public class Global {
 	
 	public static final String LOADING_HTML_URL = "http://www.ctiaotiao.com/temp/loading.html";
 	public static final String LOADING_HTML_FILE = "loading.html";
+	public static final String JSON_DATA_FILE = "data.dat";
+	
+	public static final String JSON_DATA_PURCHASE_STATE_KEY = "purchaseState";
 	
 	/////////////////////////////////////////////////
 	
@@ -98,10 +64,8 @@ public class Global {
 	public AdRequest adRequest = null;
 	public AdHandler adHandler = null;
 	public AdView adView = null;
-	public BillingService billingService = null;
-	public Handler billingHandler = null;
-	public MyPurchaseObserver purchaseOb = null;
-	public PurchaseDatabase purchaseDb = null;
+	public JSONObject mJsonData;
+	
 	private Global() {
 		adRequest = new AdRequest();
 		adRequest.addTestDevice("9988B214E74650294BA998943E7BC554");	// Tiaotiao HTC G6
@@ -111,15 +75,6 @@ public class Global {
 	
 	////////////////////
 
-	public boolean initBilling(Activity activity) {
-		billingHandler = new Handler();
-		purchaseOb = new MyPurchaseObserver(activity, billingHandler);
-		billingService = new BillingService();
-		billingService.setContext(activity);
-		purchaseDb = new PurchaseDatabase(activity);
-		ResponseHandler.register(purchaseOb);
-		return true;
-	}
 	
 	public AdView newAdView(Activity activity) {
 		adView = Util.newAdView(activity, adRequest, adHandler);
@@ -132,6 +87,54 @@ public class Global {
 	
 	public void refreshAdRequest() {
 		adRequest = new AdRequest();
+	}
+	
+	////////////////////////
+	
+	public String getPurchasedHashKay(Context context) {
+		String ANDROID_ID = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+		if (null == ANDROID_ID) {
+			ANDROID_ID = "default_id";
+		}
+		return Util.hashMD5(ANDROID_ID + "__Purchased__");
+	} 
+	
+	public boolean loadData(Context context) {
+		String jsonString = Util.readFromFile(context, Global.JSON_DATA_FILE);
+		mJsonData = null;
+		if (null != jsonString) {
+			try {
+				mJsonData = new JSONObject(jsonString);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		if (null == mJsonData) {
+			mJsonData = new JSONObject();
+			return false;
+		}
+		if (mJsonData.has(JSON_DATA_PURCHASE_STATE_KEY)) {
+			try {
+				String state = mJsonData.getString(JSON_DATA_PURCHASE_STATE_KEY);
+				if (state == getPurchasedHashKay(context)) {
+					AppData.isPurchased = true;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
+	public boolean saveData(Context context) {
+		if (null == mJsonData) {
+			return false;
+		}
+		String jsonString = mJsonData.toString();
+		if (jsonString == null) {
+			return false;
+		}
+		return Util.writeToFile(context, jsonString, Global.JSON_DATA_FILE);
 	}
 	
 }
