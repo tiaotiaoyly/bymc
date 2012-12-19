@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 
 public class MainActivity extends Activity implements OnClickListener {
@@ -29,15 +30,44 @@ public class MainActivity extends Activity implements OnClickListener {
 			this.context = context;
 		}
 		public void run() {
-			File loadingHtmlFile = new File(Global.LOADING_HTML_FILE);
-			if (!loadingHtmlFile.exists()) {
-				String htmlContent = Util.httpRead(Global.LOADING_HTML_URL);
-				Log.v(TAG, "%s", htmlContent);
-				if (htmlContent != null) {
-					boolean b = Util.writeToFile(context, htmlContent, Global.LOADING_HTML_FILE);
-					Log.d(TAG, "download loading html result %s, %s, %s", b, Global.LOADING_HTML_URL, Global.LOADING_HTML_FILE);
+//			File loadingHtmlFile = new File(Global.LOADING_HTML_FILE);
+//			if (!loadingHtmlFile.exists()) {
+//				String htmlContent = Util.httpRead(Global.LOADING_HTML_URL);
+//				Log.v(TAG, "%s", htmlContent);
+//				if (htmlContent != null) {
+//					boolean b = Util.writeToFile(context, htmlContent, Global.LOADING_HTML_FILE);
+//					Log.d(TAG, "download loading html result %s, %s, %s", b, Global.LOADING_HTML_URL, Global.LOADING_HTML_FILE);
+//				}
+//			}
+			if (Util.CheckNetworkState(context)) {
+				for (int i = 0; i < AppData.categories.length; i++) {
+					AppData.CategoryData catData = AppData.getCategory(i);
+					if (null == catData || null == catData.lessons) continue;
+					for (int j = 0; j < catData.lessons.length; j++) {
+						AppData.LessonData lessonData = catData.getLesson(j);
+						if (null == lessonData || null == lessonData.pages) continue;
+						for (int k = 0; k < lessonData.pages.length; k++) {
+							AppData.PageData pageData = lessonData.getPage(k);
+							if (pageData == null || pageData.image == null || pageData.image.equals("")) {
+								continue;
+							}
+							String hdImgUrl = Global.HD_IMAEG_BASE_URL.concat(pageData.image);
+							String hdImgPath = Global.HD_IMAEG_DIR.concat("/" + pageData.image);
+							File file = new File(hdImgPath);
+							if (file.exists()) {
+								continue;
+							}
+							int result = Util.httpDownloadToSdcard(hdImgUrl, "MobileMechanic/hd_images/", pageData.image);
+							Log.d(TAG, "+++++++ Download image %s %d", pageData.image, result);
+							try {
+								Thread.sleep(300);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
 				}
-			}
+			}// end download
 		}
 	}
 	
@@ -52,10 +82,9 @@ public class MainActivity extends Activity implements OnClickListener {
         Global.instance.newAdView(this);
         Global.instance.loadData(this);
         
-//		String htmlContent = Util.readFromFile(this, Global.LOADING_HTML_FILE);
-//		WebView webView = (WebView) this.findViewById(R.id.loadingWebView);
-//		webView.loadData(htmlContent, "text/html", "utf-8");
-//		webView.setBackgroundColor(0);
+		WebView webView = (WebView) this.findViewById(R.id.webView);
+		webView.loadUrl(Global.LOADING_HTML_URL);
+		webView.setBackgroundColor(0);
         
         Thread thread = new Thread(new BackgroudRunnable(this));
 		thread.start();
@@ -66,8 +95,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onResume() {
-		AdView adView = Global.instance.getAdView();
-		contentView.addView(adView);
+		if (!AppData.isPurchased) {
+			AdView adView = Global.instance.getAdView();
+			contentView.addView(adView);
+		}
 		super.onResume();
 	}
 	

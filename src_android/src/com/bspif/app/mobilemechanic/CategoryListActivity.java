@@ -114,8 +114,10 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 
 	@Override
 	protected void onResume() {
-		AdView adView = Global.instance.getAdView();
-		contentView.addView(adView);
+		if (!AppData.isPurchased) {
+			AdView adView = Global.instance.getAdView();
+			contentView.addView(adView);
+		}
 		super.onResume();
 	}
 	

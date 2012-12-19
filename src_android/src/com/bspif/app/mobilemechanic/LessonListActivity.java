@@ -51,8 +51,8 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 	private ViewGroup contentView = null;
 	private ListView listView = null;
 	private AbstractBillingObserver mBillingObserver;
-	private boolean mRequestingBilling = false;
 	private LessonListItemAdapter mLessonListAdapter = null;
+	private boolean mRequestingBilling = false;
 	
 	private class LessonListItemAdapter extends BaseAdapter {
 		private LayoutInflater inflater = null;
@@ -82,19 +82,6 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 					titleView.setTextColor(Color.RED);
 				}
 				items[i] = item;
-			}
-		}
-		
-		public void update() {
-			items = new View[catData.lessons.length];
-			View item = null;
-			for (int i = 0; i < catData.lessons.length; i++) {
-				item = items[i];
-				LessonData lessonData = catData.getLesson(i);
-				TextView titleView = (TextView) item.findViewById(R.id.title);
-				if (!lessonData.canAccess()) {
-					titleView.setTextColor(Color.RED);
-				}
 			}
 		}
 		
@@ -149,9 +136,17 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 	}
 
 	@Override
+	protected void onDestroy() {
+		uninitBilling();
+		super.onDestroy();
+	}
+
+	@Override
 	protected void onResume() {
-		AdView adView = Global.instance.getAdView();
-		contentView.addView(adView);
+		if (!AppData.isPurchased) {
+			AdView adView = Global.instance.getAdView();
+			contentView.addView(adView);
+		}
 		super.onResume();
 	}
 	
@@ -188,7 +183,8 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					mRequestingBilling = true;
-					BillingController.checkBillingSupported(LessonListActivity.this);	// purchase	
+					BillingController.checkBillingSupported(LessonListActivity.this);	// purchase
+					//onPurchased(); // TODO for TEST
 				}
 			});
 			builder.setNegativeButton("Later", null);
@@ -225,6 +221,11 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		this.startActivity(intent);
 	}
 	
+	protected void updateView() {
+		finish();
+		startActivity(getIntent());
+	}
+	
 	protected void onPurchased() {
 		String purchaseStatus = Global.instance.getPurchasedHashKay(this);
 		try {
@@ -234,7 +235,7 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		}
 		Global.instance.saveData(this);
 		AppData.isPurchased = true;
-		mLessonListAdapter.update();
+		updateView();
 	}
 	
 	protected void onRefund() {
@@ -245,7 +246,7 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		}
 		Global.instance.saveData(this);
 		AppData.isPurchased = false;
-		mLessonListAdapter.update();
+		updateView();
 	}
 
 	@Override
@@ -258,6 +259,14 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 	public String getPublicKey() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	protected void startBilling() {
+		
+	}
+	
+	protected void endBilling() {
+		
 	}
 	
 	protected void initBilling() {
@@ -285,7 +294,11 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 			}
 
 			public void onPurchaseStateChanged(String itemId, PurchaseState state) {
-				Log.i(TAG, "onPurchaseStateChanged %s, %d", itemId, state);
+				Log.i(TAG, "onPurchaseStateChanged %s, %d", itemId, state.ordinal());
+				String unlockId = LessonListActivity.this.getResources().getString(R.string.inapp_item_unlock);
+				if (!itemId.equals(unlockId)) {
+					return;
+				}
 				if (state == PurchaseState.PURCHASED) {
 					onPurchased();
 				} else if (state == PurchaseState.CANCELLED) {
@@ -301,9 +314,17 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 			}
 
 			public void onRequestPurchaseResponse(String itemId, ResponseCode response) {
-				Log.i(TAG, "onRequestPurchaseResponse %s, %d", itemId, response);
+				Log.i(TAG, "onRequestPurchaseResponse %s, %d", itemId, response.ordinal());
 				mRequestingBilling = false;
-				if (response == ResponseCode.RESULT_OK || response == ResponseCode.RESULT_USER_CANCELED) {
+				String unlockId = LessonListActivity.this.getResources().getString(R.string.inapp_item_unlock);
+				if (!itemId.equals(unlockId)) {
+					return;
+				}
+				if (response == ResponseCode.RESULT_OK) {
+					onPurchased();
+					return;
+				}
+				if (response == ResponseCode.RESULT_USER_CANCELED) {
 					// DO NOTHING
 					return;
 				}

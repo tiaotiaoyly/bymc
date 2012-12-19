@@ -21,7 +21,8 @@ public class NotificationService extends Service {
 	public final static String NOTIFICATION_JSON = "notification.json";
 	public final static String NOTIFICATION_ON_CLICK_INTENT = "com.bspif.intent.NOTIFI_ON_CLICK";
 	
-	private final static String URL_NOTIFICATION_JSON = "http://ctiaotiao.com/temp/notification.json"; 
+	private final static String URL_NOTIFICATION_JSON = "http://ctiaotiao.com/temp/notification.json";
+	private final static int NOTIFICATION_REPEAT = 8 * 60 * 60 * 1000;
 	
 	private final static int VERSION = 1;
 	private final static String KEY_VERSION = "version";
@@ -79,8 +80,11 @@ public class NotificationService extends Service {
 	}
 	
 	private static void downloadJsonConfig(Context context) {
+		if (!Util.CheckNetworkState(context)) {
+			return;
+		}
 		String jsonString = Util.httpRead(URL_NOTIFICATION_JSON);
-		Log.d(TAG, "download json config [%s]", jsonString);
+		//Log.d(TAG, "download json config [%s]", jsonString);
 		JSONObject jsonNew = null;
 		try {
 			jsonNew = new JSONObject(jsonString);
@@ -185,7 +189,7 @@ public class NotificationService extends Service {
 			return;
 		
 		new Notification();
-		Notification notice = new Notification(R.drawable.ic_launcher, flowText, System.currentTimeMillis());
+		Notification notice = new Notification(R.drawable.icon, flowText, System.currentTimeMillis());
 		Intent intent = new Intent(NOTIFICATION_ON_CLICK_INTENT);
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 		
@@ -201,6 +205,6 @@ public class NotificationService extends Service {
 		PendingIntent sender = PendingIntent.getBroadcast(context, 0,  ai, 0);  
 		long firstime = SystemClock.elapsedRealtime();  
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime,  30 * 1000, sender);
+		am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime, NOTIFICATION_REPEAT, sender);
 	}
 }

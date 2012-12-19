@@ -48,10 +48,13 @@ public class Global {
 
 	/////////////////////////////////////////////////
 	
-	public static final String SD_HOME = Environment.getExternalStorageDirectory().toString().concat("/.MobileMechanic");
+	public static final String SD_HOME = Environment.getExternalStorageDirectory().toString().concat("/MobileMechanic");
 	public static final String HD_IMAEG_DIR = SD_HOME.concat("/hd_images");
+	//public static final String HD_IMAEG_BASE_URL = "http://www.bspif.com/mm/";
+	public static final String HD_IMAEG_BASE_URL = "http://www.ctiaotiao.com/temp/mm/";
 	
 	public static final String LOADING_HTML_URL = "http://www.ctiaotiao.com/temp/loading.html";
+	//public static final String LOADING_HTML_URL = "http://www.bspif.com/apps.html";
 	public static final String LOADING_HTML_FILE = "loading.html";
 	public static final String JSON_DATA_FILE = "data.dat";
 	

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -23,6 +24,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class LessonActivity extends Activity implements OnClickListener{
@@ -82,23 +84,43 @@ public class LessonActivity extends Activity implements OnClickListener{
 			}
 			pagesList.add(pageView);
 		}
+		AdView adView = Global.instance.getAdView();
+		
 		pager.setCurrentItem(page - 1);
-		contentView = pager;
+		
+		RelativeLayout.LayoutParams lvParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		lvParam.addRule(RelativeLayout.ABOVE, adView.getId());
+		pager.setLayoutParams(lvParam);
+		
+		RelativeLayout layout = new RelativeLayout(this);
+		layout.addView(pager);
+		
+		contentView = layout;
+		try {
+			Bitmap bmp;
+			bmp = Util.getBitmapFromAsset(this, "Watermark-Logo");
+			contentView.setBackgroundDrawable(new BitmapDrawable(bmp));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.setContentView(contentView);
+	}
+	
+	@Override
+	protected void onResume() {
+		if (!AppData.isPurchased) {
+    		AdView adView = Global.instance.getAdView();
+			contentView.addView(adView);
+    	}
+		super.onResume();
 	}
 	
     @Override
 	protected void onPause() {
     	//ad view
-		//AdView adView = Global.instance.getAdView();
-		//contentView.addView(adView);
+    	AdView adView = Global.instance.getAdView();
+    	contentView.removeView(adView);
 		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		//contentView.removeView(Global.instance.getAdView());
-		super.onResume();
 	}
 	
 	@Override
