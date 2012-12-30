@@ -1,15 +1,11 @@
 package com.bspif.app.mobilemechanic;
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
@@ -22,36 +18,40 @@ public class ImageViewer extends RelativeLayout {
 	private ZoomControls mZoomControls = null;
 	private Bitmap mBitmap = null;
 	private int mOriginBitmapWidth = -1;
-	private int mOriginBitmapHeight = -1;
+	private float ZOOM_DELTA = 0.3F;
+	private float MAX_ZOOM_SCALE = 4.0F;
+	private float MIN_ZOOM_SCALE = 1.0F;
 	
-	public ImageViewer(Context context, String filename) {
+	public ImageViewer(Context context, Bitmap bitmap) {
 		super(context);
-		init(context, filename);
+		init(context, bitmap);
 	}
 	
-	private void init(Context context, String filename) {
+	private void init(Context context, Bitmap bitmap) {
 		// create zoom controls
-//		mZoomControls = new ZoomControls(context);
-//		RelativeLayout.LayoutParams paramsZoom = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//		paramsZoom.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//		paramsZoom.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//		paramsZoom.bottomMargin = 50;
-//		mZoomControls.setLayoutParams(paramsZoom);
-//		mZoomControls.setOnZoomInClickListener(new OnZoomIn());
-//		mZoomControls.setOnZoomOutClickListener(new OnZoomOut());
+		mZoomControls = new ZoomControls(context);
+		RelativeLayout.LayoutParams paramsZoom = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		paramsZoom.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		paramsZoom.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		paramsZoom.bottomMargin = 50;
+		mZoomControls.setLayoutParams(paramsZoom);
+		mZoomControls.setOnZoomInClickListener(new OnZoomIn());
+		mZoomControls.setOnZoomOutClickListener(new OnZoomOut());
 		
 		// create image view
-		try {
-			mBitmap = Util.getBitmapFromAsset(context, filename);
-			mOriginBitmapWidth = mBitmap.getWidth();
-			mOriginBitmapHeight = mBitmap.getHeight();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		mBitmap = bitmap;
+		mOriginBitmapWidth = mBitmap.getWidth();
 		mImageView = new ImageView(context);
 		mImageView.setImageBitmap(mBitmap);
 		RelativeLayout.LayoutParams paramsImageView = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		paramsImageView.addRule(RelativeLayout.CENTER_IN_PARENT);
+		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		int screenWidth  = wm.getDefaultDisplay().getWidth();  
+		int screenHeight = wm.getDefaultDisplay().getHeight(); 
+		paramsImageView.width = screenWidth;
+		paramsImageView.height = screenHeight;
 		mImageView.setLayoutParams(paramsImageView);
+		mImageView.setAdjustViewBounds(true);
 		
 		// add child
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
@@ -64,7 +64,7 @@ public class ImageViewer extends RelativeLayout {
 	private class OnZoomIn implements OnClickListener {
 		public void onClick(View v) {
 			if (!zoomIn()) {
-				mZoomControls.setIsZoomInEnabled(false);
+				//mZoomControls.setIsZoomInEnabled(false);
 			}
 			mZoomControls.setIsZoomOutEnabled(true);
 		}
@@ -73,7 +73,7 @@ public class ImageViewer extends RelativeLayout {
 	private class OnZoomOut implements OnClickListener {
 		public void onClick(View v) {
 			if (!zoomOut()) {
-				mZoomControls.setIsZoomOutEnabled(false);
+				//mZoomControls.setIsZoomOutEnabled(false);
 			}
 			mZoomControls.setIsZoomInEnabled(true);
 		}
@@ -81,21 +81,21 @@ public class ImageViewer extends RelativeLayout {
 	
 	private boolean zoomIn() {
 		float scale = getCurrentScale();
-		if (scale >= 1) {
+		scale = scale + ZOOM_DELTA < MAX_ZOOM_SCALE ? scale + ZOOM_DELTA : MAX_ZOOM_SCALE;
+		scaleImageView(scale);
+		if (scale >= MAX_ZOOM_SCALE) {
 			return false;
 		}
-		scale = scale + 0.1f < 1f ? scale + 0.1f : 1f;
-		scaleImageView(scale);
 		return true;
 	}
 	
 	private boolean zoomOut() {
 		float scale = getCurrentScale();
-		if (scale <= 0.5) {
+		scale = scale - ZOOM_DELTA > MIN_ZOOM_SCALE ? scale - ZOOM_DELTA : MIN_ZOOM_SCALE;
+		scaleImageView(scale);
+		if (scale <= ZOOM_DELTA) {
 			return false;
 		}
-		scale = scale - 0.1f > 0.5f ? scale - 0.1f : 0.5f;
-		scaleImageView(scale);
 		return true;
 	}
 	
@@ -112,7 +112,7 @@ public class ImageViewer extends RelativeLayout {
 
 	private float getCurrentScale() {
 		float scale = 0;
-		scale = mImageView.getMeasuredWidth() / mOriginBitmapWidth;
+		scale = mImageView.getMeasuredWidth() / (float)mOriginBitmapWidth;
 		
 		Log.d(TAG, "get current scale %.2f", scale);
 		return scale;

@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
-import android.os.Parcel;
 import android.os.SystemClock;
 
 public class NotificationService extends Service {
@@ -20,9 +19,6 @@ public class NotificationService extends Service {
 	private final static String TAG = "NotifServ";
 	public final static String NOTIFICATION_JSON = "notification.json";
 	public final static String NOTIFICATION_ON_CLICK_INTENT = "com.bspif.intent.NOTIFI_ON_CLICK";
-	
-	private final static String URL_NOTIFICATION_JSON = "http://ctiaotiao.com/temp/notification.json";
-	private final static int NOTIFICATION_REPEAT = 8 * 60 * 60 * 1000;
 	
 	private final static int VERSION = 1;
 	private final static String KEY_VERSION = "version";
@@ -32,7 +28,6 @@ public class NotificationService extends Service {
 	private final static String KEY_TEXT = "text";
 	private final static String KEY_FLOW = "flowText";
 	private final static String KEY_CLICKED = "clicked";
-	private final static String KEY_LAST_POPUP_TIME = "id";
 	
 	@Override
 	public void onCreate() {
@@ -83,7 +78,7 @@ public class NotificationService extends Service {
 		if (!Util.CheckNetworkState(context)) {
 			return;
 		}
-		String jsonString = Util.httpRead(URL_NOTIFICATION_JSON);
+		String jsonString = Util.httpRead(Global.URL_NOTIFICATION_JSON);
 		//Log.d(TAG, "download json config [%s]", jsonString);
 		JSONObject jsonNew = null;
 		try {
@@ -91,8 +86,7 @@ public class NotificationService extends Service {
 			if (!checkJson(jsonNew)) {
 				return;
 			}
-		} catch (JSONException e) {
-			Log.e(TAG, e.toString());
+		} catch (Exception e) {
 			return;
 		}
 		JSONObject jsonNotification = loadJsonConfig(context);
@@ -119,8 +113,6 @@ public class NotificationService extends Service {
 				return null;
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
-			Log.d(TAG, jsonStr);
 		}
 		Log.d(TAG, "load json config %s", json);
 		return json;
@@ -167,13 +159,11 @@ public class NotificationService extends Service {
 			return;
 		Log.d(TAG, "show notif %s", jsonNotification);
 		int id = 0;
-		String url = null;
 		String text = null;
 		String title = null;
 		String flowText = null;
 		try {
 			id = jsonNotification.getInt(KEY_ID);
-			url = jsonNotification.getString(KEY_URL);
 			title = jsonNotification.getString(KEY_TITLE);
 			text = jsonNotification.getString(KEY_TEXT);
 			flowText = jsonNotification.getString(KEY_FLOW);
@@ -205,6 +195,6 @@ public class NotificationService extends Service {
 		PendingIntent sender = PendingIntent.getBroadcast(context, 0,  ai, 0);  
 		long firstime = SystemClock.elapsedRealtime();  
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime, NOTIFICATION_REPEAT, sender);
+		am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstime, Global.NOTIFICATION_REPEAT, sender);
 	}
 }

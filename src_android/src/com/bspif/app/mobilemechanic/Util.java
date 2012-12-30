@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -18,6 +19,7 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,6 +33,7 @@ import android.os.Environment;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 
+@SuppressLint({ "WorldReadableFiles", "WorldWriteableFiles" })
 public class Util {
 
 	private static String SDPATH;
@@ -77,25 +80,25 @@ public class Util {
 	}
 
 	public static String httpRead(String url) {
-		StringBuffer sb = new StringBuffer("");
+		StringBuffer sb = null;
 		BufferedReader bfr = null;
 		try {
 			InputStream input = getInputStreamFromUrl(url);
 			bfr = new BufferedReader(new InputStreamReader(input));
 			String line = "";
+			sb = new StringBuffer("");
 			while ((line = bfr.readLine()) != null) {
 				sb.append(line);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 			try {
 				if (null != bfr)
 					bfr.close();
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
+		if (null == sb) return null;
 		return sb.toString();
 	}
 
@@ -122,28 +125,58 @@ public class Util {
 		return 0;
 	}
 
-	public static int httpDownloadToSdcard(String urlStr, String path,
-			String fileName) {
-		InputStream inputStream = null;
+	public static int httpDownloadToSdcard(String urlStr, String dirname, String fileName) {
+		File dir = new File(dirname);
+		if (!dir.exists()) {
+			if (!dir.mkdirs())
+				Log.e("Util", "dir makdir fail %s", dirname);
+		}
+		if (!dir.isDirectory()) {
+			return -5;
+		}
+		fileName = dir + "/" + fileName;
+		
+		// 构造URL
+		URL url;
+		OutputStream os = null;
+		InputStream is = null;
 		try {
-			if (isFileExist(path + fileName)) {
-				return 1;
-			} else {
-				inputStream = getInputStreamFromUrl(urlStr);
-				File resultFile = write2SDFromInput(path, fileName, inputStream);
-				if (resultFile == null) {
-					return -1;
-				}
+			url = new URL(urlStr);
+			// 打开连接
+			URLConnection con = url.openConnection();
+			// 获得文件的长度
+			int contentLength = con.getContentLength();
+			// 输入流
+			is = con.getInputStream();
+			// 1K的数据缓冲
+			byte[] bs = new byte[1024];
+			// 读取到的数据长度
+			int len;
+			// 输出的文件流
+			os = new FileOutputStream(fileName);
+			// 开始读取
+			int readSize = 0;
+			while ((len = is.read(bs)) != -1) {
+				os.write(bs, 0, len);
+				readSize += len;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			if (readSize != contentLength) {
+				return -4;
+			}
+		} catch (MalformedURLException e) {
+			Log.e("Util", e.toString());
 			return -1;
+		} catch (IOException e) {
+			Log.e("Util", e.toString());
+			return -2;
 		} finally {
+			// 完毕，关闭所有链接
 			try {
-				if (null != inputStream)
-					inputStream.close();
+				if (null != os) os.close();
+				if (null != is) is.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("Util", e.toString());
+				return -3;
 			}
 		}
 		return 0;
@@ -175,12 +208,12 @@ public class Util {
 		return dir;
 	}
 
+	@SuppressLint("WorldWriteableFiles")
 	public static boolean writeToFile(Context context, String text,
 			String filename) {
 		OutputStream output = null;
 		try {
-			output = context.openFileOutput(filename,
-					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+			output = context.openFileOutput(filename, Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 			output.write(text.getBytes());
 			output.flush();
 		} catch (Exception e) {
@@ -202,13 +235,13 @@ public class Util {
 		StringBuffer sb = new StringBuffer();
 		try {
 			input = context.openFileInput(filename);
+			int length = input.available();
+			byte[] buffer = new byte[length];
 			while ((input.read(buffer)) != -1) {
 				sb.append(new String(buffer));
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return sb.toString();
 	}
@@ -295,12 +328,14 @@ public class Util {
 	}
 
 	public static boolean CheckNetworkState(Context context) {
-        ConnectivityManager manager = (ConnectivityManager)context.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-        //State mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-        State wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-        if(wifi == State.CONNECTED)
-        	return true;
+		ConnectivityManager manager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// State mobile =
+		// manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+		State wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+				.getState();
+		if (wifi == State.CONNECTED)
+			return true;
 		return false;
 	}
 }

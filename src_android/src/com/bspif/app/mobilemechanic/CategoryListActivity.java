@@ -2,16 +2,13 @@ package com.bspif.app.mobilemechanic;
 
 import java.io.IOException;
 
+import org.json.JSONException;
+
 import com.bspif.app.mobilemechanic.AppData.CategoryData;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
-import com.google.ads.Ad;
-import com.google.ads.AdListener;
-import com.google.ads.AdRequest;
-import com.google.ads.AdRequest.ErrorCode;
-import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
 import android.app.Activity;
@@ -21,20 +18,14 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,7 +34,6 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 
 	private static final String TAG = "CatList";
 	private ViewGroup contentView = null;
-	
 	private class CategoryListItemAdapter extends BaseAdapter {
 		private LayoutInflater inflater = null;
 		private View[] items = null;
@@ -137,7 +127,7 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
                 // port do nothing is ok  
         }  
 	}
-	
+
 	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
 		Log.d("Cat", String.format("on category item clicked %d", index));
 		AppData.CategoryData catData = AppData.getCategory(index);
@@ -154,8 +144,28 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 			String appID = this.getResources().getString(R.string.facebook_app_id);
 			Facebook facebook = new Facebook(appID);
 			Bundle param = new Bundle();
-			param.putString("message", "helloworld");
-			facebook.dialog(this, "me/feed", param, new DialogListener() {
+			
+			String shareText = catData.facebook;
+			if (Global.instance.mJsonData.has("FACEBOOK_SHARE_TEXT")) {
+				try {
+					shareText = Global.instance.mJsonData.getString("FACEBOOK_SHARE_TEXT");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			String[] params = shareText.split(";");
+			String p = null;
+			String key, val;
+			for (int i = 0; i < params.length; i++) {
+				p = params[i];
+				int ind = p.indexOf(':');
+				if (-1 == ind) continue;
+				key = p.substring(0, ind);
+				val = p.substring(ind + 1);
+				param.putString(key.toLowerCase(), val);
+				Log.i(TAG, "++++++ put %s , %s", key, val);
+			}
+			facebook.dialog(this, "feed", param, new DialogListener() {
 				public void onComplete(Bundle values) {
 					Log.d(TAG, "on Dialog complete");
 				}
@@ -163,7 +173,7 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 					Log.d(TAG, "on Facebook error");
 				}
 				public void onError(DialogError e) {
-					Log.d(TAG, "on Dialog complete");
+					Log.d(TAG, "on Dialog error");
 				}
 				public void onCancel() {
 					Log.d(TAG, "on Dialog cancel");
@@ -175,7 +185,17 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 			return;
 		}
 		if (catData.twitter != null) {
-			String tweetUrl = "http://twitter.com/intent/tweet?text="+catData.twitter;
+			String shareText = catData.twitter;
+			if (Global.instance.mJsonData.has("TWITTER_SHARE_TEXT")) {
+				try {
+					shareText = Global.instance.mJsonData.getString("TWITTER_SHARE_TEXT");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			shareText.replaceFirst("<Html>", "");
+			shareText.replaceFirst("</Html>", "");
+			String tweetUrl = "http://twitter.com/intent/tweet?text=" + java.net.URLEncoder.encode(shareText);
 			Uri uri = Uri.parse(tweetUrl);
 			this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			return;

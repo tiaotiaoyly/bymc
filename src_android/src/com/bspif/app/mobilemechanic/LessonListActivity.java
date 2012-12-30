@@ -7,15 +7,11 @@ import org.json.JSONException;
 import net.robotmedia.billing.BillingController;
 import net.robotmedia.billing.BillingController.IConfiguration;
 import net.robotmedia.billing.BillingRequest.ResponseCode;
-import net.robotmedia.billing.helper.AbstractBillingActivity;
 import net.robotmedia.billing.helper.AbstractBillingObserver;
 import net.robotmedia.billing.model.Transaction.PurchaseState;
 
 import com.bspif.app.mobilemechanic.AppData.CategoryData;
 import com.bspif.app.mobilemechanic.AppData.LessonData;
-import com.google.ads.Ad;
-import com.google.ads.AdListener;
-import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.AdView;
 
 import android.app.Activity;
@@ -28,14 +24,12 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -183,8 +177,10 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					mRequestingBilling = true;
-					BillingController.checkBillingSupported(LessonListActivity.this);	// purchase
-					//onPurchased(); // TODO for TEST
+					BillingController.BillingStatus status = BillingController.checkBillingSupported(LessonListActivity.this);	// purchase
+					if (status != BillingController.BillingStatus.SUPPORTED) {
+						showNotSupportedBilling();
+					}
 				}
 			});
 			builder.setNegativeButton("Later", null);
@@ -261,12 +257,8 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		return null;
 	}
 	
-	protected void startBilling() {
-		
-	}
-	
-	protected void endBilling() {
-		
+	protected void showNotSupportedBilling() {
+		Toast.makeText(LessonListActivity.this, R.string.inapp_not_supported, Toast.LENGTH_LONG).show();
 	}
 	
 	protected void initBilling() {
@@ -278,7 +270,7 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 					return;
 				}
 				if (!supported) {
-					Toast.makeText(LessonListActivity.this, R.string.inapp_not_supported, Toast.LENGTH_LONG).show();
+					showNotSupportedBilling();
 					mRequestingBilling = false;
 					return;
 				} else {
