@@ -236,6 +236,7 @@ public class Util {
 		try {
 			input = context.openFileInput(filename);
 			int length = input.available();
+			if (length <= 0) return "";
 			byte[] buffer = new byte[length];
 			while ((input.read(buffer)) != -1) {
 				sb.append(new String(buffer));

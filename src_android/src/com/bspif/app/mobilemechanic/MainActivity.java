@@ -156,7 +156,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		WebView webView = (WebView) this.findViewById(R.id.webView);
 		String loadingHTML = Util.readFromFile(this, Global.LOADING_HTML_FILE);
 		webView.loadData(loadingHTML, "text/html", "utf-8");
-		//webView.loadUrl(Global.LOADING_HTML_URL);
 		webView.setBackgroundColor(0);
         
 		mRunnable = new BackgroudRunnable(this);
@@ -169,10 +168,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onResume() {
-		if (!AppData.isPurchased) {
-			AdView adView = Global.instance.getAdView();
-			contentView.addView(adView);
-		}
+//		if (!AppData.isPurchased) {
+//			AdView adView = Global.instance.getAdView();
+//			contentView.addView(adView);
+//		}
 		super.onResume();
 	}
 	
@@ -187,8 +186,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onPause() {
-    	AdView adView = Global.instance.getAdView();
-    	contentView.removeView(adView);
+//    	AdView adView = Global.instance.getAdView();
+//    	contentView.removeView(adView);
 		super.onPause();
 	}
 	

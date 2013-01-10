@@ -178,7 +178,7 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 				public void onClick(DialogInterface dialog, int which) {
 					mRequestingBilling = true;
 					BillingController.BillingStatus status = BillingController.checkBillingSupported(LessonListActivity.this);	// purchase
-					if (status != BillingController.BillingStatus.SUPPORTED) {
+					if (status == BillingController.BillingStatus.UNSUPPORTED) {
 						showNotSupportedBilling();
 					}
 				}
