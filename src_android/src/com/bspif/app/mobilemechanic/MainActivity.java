@@ -122,8 +122,8 @@ public class MainActivity extends Activity implements OnClickListener {
 					try {
 						String text = removeHTMLHead(twitterShareText);
 						Log.d(TAG, text);
-						Global.instance.mJsonData.put("TWITTER_SHARE_TEXT", text);
-						Global.instance.saveData(context);
+						AppData.put(AppData.JSON_DATA_TWITTER_SHARE_TEXT, text);
+						AppData.saveData(context);
 					} catch (JSONException e) {
 					}
 				}
@@ -131,8 +131,8 @@ public class MainActivity extends Activity implements OnClickListener {
 					try {
 						String text = removeHTMLHead(facebookShareText);
 						Log.d(TAG, text);
-						Global.instance.mJsonData.put("FACEBOOK_SHARE_TEXT", text);
-						Global.instance.saveData(context);
+						AppData.put(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT, text);
+						AppData.saveData(context);
 					} catch (JSONException e) {
 					}
 				}
@@ -151,7 +151,6 @@ public class MainActivity extends Activity implements OnClickListener {
         btn.setOnClickListener(this);
         
         Global.instance.newAdView(this);
-        Global.instance.loadData(this);
         
 		WebView webView = (WebView) this.findViewById(R.id.webView);
 		String loadingHTML = Util.readFromFile(this, Global.LOADING_HTML_FILE);

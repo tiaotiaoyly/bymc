@@ -34,14 +34,64 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 
 	private static final String TAG = "CatList";
 	private ViewGroup contentView = null;
-	private class CategoryListItemAdapter extends BaseAdapter {
+	
+	private static class CategoryListItemAdapter extends BaseAdapter {
+		
+		public boolean areAllItemsEnabled() {
+			return false;
+		}
+
+		@Override
+		public boolean isEnabled(int position) {
+			return true;
+		}
+
 		private LayoutInflater inflater = null;
 		private View[] items = null;
+		private String[] itemsType = null;
+		private String[] itemsParam = null;
+		
+		public static final String TYPE_HEADER = "header";
+		public static final String TYPE_CATEGORY = "category";
+		public static final String TYPE_SETTING = "settings";
+		public static final String TYPE_ADD_CAR = "addcar";
+		public static final String TYPE_CAR_INFO = "carinfo";
+		public static final String TYPE_FACEBOOK = "facebook";
+		public static final String TYPE_TWITTER = "twitter";
+		public static final String TYPE_WEBSITE = "website";
 
 		public CategoryListItemAdapter(Context context) {
 			super();
+			int cateOffset = getCategoryOffset();
+			items = new View[cateOffset + AppData.categories.length];
 			inflater = LayoutInflater.from(context);
-			items = new View[AppData.categories.length];
+			
+			// car title
+			View title1 = inflater.inflate(R.layout.cat_list_seperator, null);
+			((TextView)title1.findViewById(R.id.title)).setText("Car Managerment");
+			items[0] = title1;
+			
+			// TODO cars
+			for (int i = 0; i < AppData.getCarCount(); i++) {
+				AppData.CarData carData = AppData.getCarData(i);
+				View item = inflater.inflate(R.layout.cat_list_item, null);
+				((TextView)item.findViewById(R.id.title)).setText(carData.name);
+				((ImageView)item.findViewById(R.id.icon)).setImageResource(R.drawable.icon);
+				items[1 + i] = item;
+			}
+			
+			// add a cars 
+			View addCarItem = inflater.inflate(R.layout.cat_list_item, null);
+			((TextView)addCarItem.findViewById(R.id.title)).setText("Add a car");
+			((ImageView)addCarItem.findViewById(R.id.icon)).setImageResource(R.drawable.icon);
+			items[cateOffset - 2] = addCarItem;
+			
+			// category title
+			View title2 = inflater.inflate(R.layout.cat_list_seperator, null);
+			((TextView)title2.findViewById(R.id.title)).setText("Categorys");
+			items[cateOffset - 1] = title2;
+			
+			// new category views items
 			for (int i = 0; i < AppData.categories.length; i++) {
 				CategoryData catData = AppData.getCategory(i);
 				View item = inflater.inflate(R.layout.cat_list_item, null);
@@ -54,7 +104,7 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				items[i] = item;
+				items[cateOffset - i] = item;
 			}
 		}
 		
@@ -74,6 +124,9 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 			return items[position];
 		}
 		
+		public static int getCategoryOffset() {
+			return AppData.cars.length + 3;	// two titles and 'add a car' option
+		}
 	}
 	
 	@Override
@@ -84,6 +137,10 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 		
 		// ad view
         AdView adview = Global.instance.getAdView();
+        
+        // head list view
+        ListView headList = new ListView(this);
+        
         
 		// list view
 		ListView lv = new ListView(this);
@@ -129,6 +186,11 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 	}
 
 	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
+		
+		
+		// on category clicked
+		index -= CategoryListItemAdapter.getCategoryOffset();
+		
 		Log.d("Cat", String.format("on category item clicked %d", index));
 		AppData.CategoryData catData = AppData.getCategory(index);
 		if (null == catData) {
@@ -146,9 +208,9 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 			Bundle param = new Bundle();
 			
 			String shareText = catData.facebook;
-			if (Global.instance.mJsonData.has("FACEBOOK_SHARE_TEXT")) {
+			if (AppData.has(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT)) {
 				try {
-					shareText = Global.instance.mJsonData.getString("FACEBOOK_SHARE_TEXT");
+					shareText = AppData.getString(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -163,7 +225,6 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 				key = p.substring(0, ind);
 				val = p.substring(ind + 1);
 				param.putString(key.toLowerCase(), val);
-				Log.i(TAG, "++++++ put %s , %s", key, val);
 			}
 			facebook.dialog(this, "feed", param, new DialogListener() {
 				public void onComplete(Bundle values) {
@@ -186,9 +247,9 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 		}
 		if (catData.twitter != null) {
 			String shareText = catData.twitter;
-			if (Global.instance.mJsonData.has("TWITTER_SHARE_TEXT")) {
+			if (AppData.has(AppData.JSON_DATA_TWITTER_SHARE_TEXT)) {
 				try {
-					shareText = Global.instance.mJsonData.getString("TWITTER_SHARE_TEXT");
+					shareText = AppData.getString(AppData.JSON_DATA_TWITTER_SHARE_TEXT);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

@@ -223,24 +223,17 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 	}
 	
 	protected void onPurchased() {
-		String purchaseStatus = Global.instance.getPurchasedHashKay(this);
-		try {
-			Global.instance.mJsonData.put(Global.JSON_DATA_PURCHASE_STATE_KEY, purchaseStatus);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		Global.instance.saveData(this);
-		AppData.isPurchased = true;
+		AppData.setPurchased(true, this);
 		updateView();
 	}
 	
 	protected void onRefund() {
 		try {
-			Global.instance.mJsonData.put(Global.JSON_DATA_PURCHASE_STATE_KEY, null);
+			AppData.put(AppData.JSON_DATA_PURCHASE_STATE_KEY, null);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Global.instance.saveData(this);
+		AppData.saveData(this);
 		AppData.isPurchased = false;
 		updateView();
 	}
