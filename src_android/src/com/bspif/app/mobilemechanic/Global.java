@@ -1,17 +1,17 @@
 package com.bspif.app.mobilemechanic;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.RelativeLayout;
+import android.provider.Settings;
 
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.AdRequest.ErrorCode;
-import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
 public class Global {
@@ -39,13 +39,23 @@ public class Global {
 			Log.d(TAG, "onReceiveAd");
 		}
 	}
-	
+
 	/////////////////////////////////////////////////
 	
-	public static final String SD_HOME = Environment.getExternalStorageDirectory().toString().concat("/.MobileMechanic");
+	public static final String SD_HOME = Environment.getExternalStorageDirectory().toString().concat("/MobileMechanic");
 	public static final String HD_IMAEG_DIR = SD_HOME.concat("/hd_images");
 	
-	public static final String LOADING_HTML_URL = "http://www.ctiaotiao.com/temp/loading.html";
+	public static final String HD_IMAEG_BASE_URL = "http://www.bspif.com/mm/";
+	//public static final String HD_IMAEG_BASE_URL = "http://www.ctiaotiao.com/temp/mm/";
+	public static final String LOADING_HTML_URL = "http://www.bspif.com/apps.html";
+	//public static final String LOADING_HTML_URL = "http://www.ctiaotiao.com/temp/loading.html";
+	public static final String URL_NOTIFICATION_JSON = "http://www.bspif.com/mm/notification.json";
+	//public static final String URL_NOTIFICATION_JSON = "http://ctiaotiao.com/temp/notification.json";
+	public static final String URL_TWITTER_SHARE_TEXT = "http://www.bspif.com/mmTsharing.html";
+	public static final String URL_FACEBOOK_SHARE_TEXT = "http://www.bspif.com/mmFsharing.html";
+	
+	public final static int NOTIFICATION_REPEAT = 6 * 60 * 60 * 1000;
+	
 	public static final String LOADING_HTML_FILE = "loading.html";
 	
 	/////////////////////////////////////////////////
@@ -65,6 +75,7 @@ public class Global {
 	
 	////////////////////
 
+	
 	public AdView newAdView(Activity activity) {
 		adView = Util.newAdView(activity, adRequest, adHandler);
 		return adView;
@@ -77,5 +88,6 @@ public class Global {
 	public void refreshAdRequest() {
 		adRequest = new AdRequest();
 	}
+	
 	
 }

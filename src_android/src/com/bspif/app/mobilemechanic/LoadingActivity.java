@@ -5,11 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebView;
 
 public class LoadingActivity extends Activity {    
 	
-	private static final String TAG = "Loading";
+	private static final long MIN_LOADING_TIME = 1000;
 	
 	private class LoadingRunnable implements Runnable {
 		Activity activity;
@@ -19,7 +18,16 @@ public class LoadingActivity extends Activity {
 		}
 		
 		public void run() {
+			long startTime = System.currentTimeMillis();
 			AppData.initialize(activity);
+			long endTime = System.currentTimeMillis();
+			long usedTime = endTime - startTime;
+			if (usedTime < MIN_LOADING_TIME)
+				try {
+					Thread.sleep(MIN_LOADING_TIME - usedTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			Intent it = new Intent(activity, MainActivity.class);
 			activity.startActivity(it);
 			activity.finish();

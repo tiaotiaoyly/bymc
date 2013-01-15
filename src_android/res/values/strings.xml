@@ -6,5 +6,6 @@
     <string name="facebook_app_id">130593330423996</string>
     <string name="admob_id">a15073ab5c28634</string>
     <string name="category_activity_title">Mobile Mechanic</string>
-    
+    <string name="inapp_item_unlock">android.test.purchased</string>
+    <string name="inapp_not_supported">In App Billing not supported</string>
 </resources>

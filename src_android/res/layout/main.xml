@@ -4,26 +4,46 @@
     android:id="@+id/main_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffff"
+    android:background="#66666A"
     android:orientation="vertical" >
 
-    <ImageView
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:padding="50dp" />
+
+    <ImageButton
         android:id="@+id/main_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="103dp"
-        android:maxWidth="100dp"
-        android:src="@drawable/finalbutton"
+        android:layout_marginBottom="80dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:maxWidth="150dp"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/main_btn_selector"
         tools:ignore="ContentDescription" />
-
-    <WebView
-        android:id="@+id/webView1"
+      
+    <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/main_btn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp" />
-
+        android:layout_marginTop="50dp"
+        android:shadowColor="@android:color/darker_gray"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:text="Start"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+    
 </RelativeLayout>

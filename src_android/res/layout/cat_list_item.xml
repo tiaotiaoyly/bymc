@@ -5,18 +5,17 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:adjustViewBounds="true"
-        android:maxHeight="48dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/icon" android:contentDescription="icon"/>
 
 	<TextView xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/title"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:textSize="24dp"
+	    android:textSize="24sp"
 	    android:padding="8dp" 
 	    >
 	</TextView>
