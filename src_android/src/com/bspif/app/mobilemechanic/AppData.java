@@ -75,7 +75,7 @@ public class AppData {
 			return false;
 		}
 		
-		if (!loadData(context)) {
+		if (!loadData()) {
 			return false;
 		}
 		
@@ -91,8 +91,8 @@ public class AppData {
 	/////////////////////////////////////////////////////////////////////////
 	
 
-	public static boolean loadData(Context context) {
-		String jsonString = Util.readFromFile(context, JSON_DATA_FILE);
+	public static boolean loadData() {
+		String jsonString = Util.readFromFile(mContext, JSON_DATA_FILE);
 		mJsonData = null;
 		if (null != jsonString) {
 			try {
@@ -108,7 +108,7 @@ public class AppData {
 		if (mJsonData.has(JSON_DATA_PURCHASE_STATE_KEY)) {
 			try {
 				String state = mJsonData.getString(JSON_DATA_PURCHASE_STATE_KEY);
-				if (state == getPurchasedHashKay(context)) {
+				if (state == getPurchasedHashKay()) {
 					AppData.isPurchased = true;
 				}
 			} catch (JSONException e) {
@@ -164,7 +164,7 @@ public class AppData {
 	public static void setPurchased(boolean purchased, Context context) {
 		String purchaseStatus = "False"; 
 		if (purchased) {
-			purchaseStatus = getPurchasedHashKay(context);
+			purchaseStatus = getPurchasedHashKay();
 		}
 		try {
 			AppData.put(AppData.JSON_DATA_PURCHASE_STATE_KEY, purchaseStatus);
@@ -174,8 +174,8 @@ public class AppData {
 		AppData.isPurchased = purchased;
 	}
 	
-	public static String getPurchasedHashKay(Context context) {
-		String ANDROID_ID = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+	public static String getPurchasedHashKay() {
+		String ANDROID_ID = Settings.System.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 		if (null == ANDROID_ID) {
 			ANDROID_ID = "default_id";
 		}

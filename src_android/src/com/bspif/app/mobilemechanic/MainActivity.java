@@ -123,7 +123,7 @@ public class MainActivity extends Activity implements OnClickListener {
 						String text = removeHTMLHead(twitterShareText);
 						Log.d(TAG, text);
 						AppData.put(AppData.JSON_DATA_TWITTER_SHARE_TEXT, text);
-						AppData.saveData(context);
+						AppData.saveData();
 					} catch (JSONException e) {
 					}
 				}
@@ -132,7 +132,7 @@ public class MainActivity extends Activity implements OnClickListener {
 						String text = removeHTMLHead(facebookShareText);
 						Log.d(TAG, text);
 						AppData.put(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT, text);
-						AppData.saveData(context);
+						AppData.saveData();
 					} catch (JSONException e) {
 					}
 				}

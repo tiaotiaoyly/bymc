@@ -233,7 +233,7 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		AppData.saveData(this);
+		AppData.saveData();
 		AppData.isPurchased = false;
 		updateView();
 	}
