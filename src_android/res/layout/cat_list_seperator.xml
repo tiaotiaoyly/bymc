@@ -6,11 +6,11 @@
     android:orientation="vertical" >
     
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/title"
+	    android:id="@+id/seperator_title"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:textSize="28sp"
-	    android:padding="8dp" 
+	    android:textSize="14sp"
+	    android:padding="4dp" 
 	    >
 	</TextView>
 

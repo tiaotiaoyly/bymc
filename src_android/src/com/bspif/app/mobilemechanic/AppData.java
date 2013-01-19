@@ -239,6 +239,7 @@ public class AppData {
 	}
 	
 	public static class CategoryData {
+		public int id = -1;
 		public String title = "";
 		public String icon = "";
 		public LessonData[] lessons = null;

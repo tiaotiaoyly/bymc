@@ -1,6 +1,7 @@
 package com.bspif.app.mobilemechanic;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 
@@ -33,102 +34,26 @@ import android.widget.TextView;
 public class CategoryListActivity extends Activity implements OnItemClickListener {
 
 	private static final String TAG = "CatList";
+	
+	public static final String TYPE_HEADER = "header";
+	public static final String TYPE_CATEGORY = "category";
+	public static final String TYPE_SETTING = "settings";
+	public static final String TYPE_ADD_CAR = "addcar";
+	public static final String TYPE_CAR_INFO = "carinfo";
+	public static final String TYPE_FACEBOOK = "facebook";
+	public static final String TYPE_TWITTER = "twitter";
+	public static final String TYPE_WEBSITE = "website";
+
+	private ListViewAdapter mAdapter = null;
 	private ViewGroup contentView = null;
 	
-	private static class CategoryListItemAdapter extends BaseAdapter {
-		
-		public boolean areAllItemsEnabled() {
-			return false;
-		}
-
-		@Override
-		public boolean isEnabled(int position) {
-			return true;
-		}
-
-		private LayoutInflater inflater = null;
-		private View[] items = null;
-		private String[] itemsType = null;
-		private String[] itemsParam = null;
-		
-		public static final String TYPE_HEADER = "header";
-		public static final String TYPE_CATEGORY = "category";
-		public static final String TYPE_SETTING = "settings";
-		public static final String TYPE_ADD_CAR = "addcar";
-		public static final String TYPE_CAR_INFO = "carinfo";
-		public static final String TYPE_FACEBOOK = "facebook";
-		public static final String TYPE_TWITTER = "twitter";
-		public static final String TYPE_WEBSITE = "website";
-
-		public CategoryListItemAdapter(Context context) {
-			super();
-			int cateOffset = getCategoryOffset();
-			items = new View[cateOffset + AppData.categories.length];
-			inflater = LayoutInflater.from(context);
-			
-			// car title
-			View title1 = inflater.inflate(R.layout.cat_list_seperator, null);
-			((TextView)title1.findViewById(R.id.title)).setText("Car Managerment");
-			items[0] = title1;
-			
-			// TODO cars
-			for (int i = 0; i < AppData.getCarCount(); i++) {
-				AppData.CarData carData = AppData.getCarData(i);
-				View item = inflater.inflate(R.layout.cat_list_item, null);
-				((TextView)item.findViewById(R.id.title)).setText(carData.name);
-				((ImageView)item.findViewById(R.id.icon)).setImageResource(R.drawable.icon);
-				items[1 + i] = item;
-			}
-			
-			// add a cars 
-			View addCarItem = inflater.inflate(R.layout.cat_list_item, null);
-			((TextView)addCarItem.findViewById(R.id.title)).setText("Add a car");
-			((ImageView)addCarItem.findViewById(R.id.icon)).setImageResource(R.drawable.icon);
-			items[cateOffset - 2] = addCarItem;
-			
-			// category title
-			View title2 = inflater.inflate(R.layout.cat_list_seperator, null);
-			((TextView)title2.findViewById(R.id.title)).setText("Categorys");
-			items[cateOffset - 1] = title2;
-			
-			// new category views items
-			for (int i = 0; i < AppData.categories.length; i++) {
-				CategoryData catData = AppData.getCategory(i);
-				View item = inflater.inflate(R.layout.cat_list_item, null);
-				TextView titleView = (TextView) item.findViewById(R.id.title);
-				ImageView iconView = (ImageView) item.findViewById(R.id.icon);
-				titleView.setText(catData.title);
-				try {
-					Bitmap iconBmp = Util.getBitmapFromAsset(context, catData.icon);
-					iconView.setImageBitmap(iconBmp);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				items[cateOffset - i] = item;
-			}
-		}
-		
-		public int getCount() {
-			return AppData.categories.length;
-		}
-
-		public Object getItem(int position) {
-			return position;
-		}
-
-		public long getItemId(int position) {
-			return position;
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			return items[position];
-		}
-		
-		public static int getCategoryOffset() {
-			return AppData.cars.length + 3;	// two titles and 'add a car' option
-		}
+	public View newListItemView(Context context, String title, String icon) {
+		View view = View.inflate(context, R.layout.cat_list_item, null);
+		if (null != title) Util.setViewText(view, R.id.title, title);
+		if (null != icon) Util.setViewImage(view, R.id.icon, icon);
+		return view;
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -141,12 +66,8 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
         // head list view
         ListView headList = new ListView(this);
         
-        
 		// list view
-		ListView lv = new ListView(this);
-		CategoryListItemAdapter ad = new CategoryListItemAdapter(this); 
-		lv.setAdapter(ad);
-		lv.setOnItemClickListener(this);
+		ListView lv = createListView();
 		RelativeLayout.LayoutParams lvParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		lvParam.addRule(RelativeLayout.ABOVE, adview.getId());
 		lv.setLayoutParams(lvParam);
@@ -157,6 +78,38 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 		//layout.addView(adview);
 		contentView = layout;
 		setContentView(contentView);
+	}
+	
+	public ListView createListView() {
+		ListView lv = new ListView(this);
+		ListViewAdapter adapter = new ListViewAdapter();
+		ListViewAdapter.Item item;
+		View view;
+		// cars
+		adapter.add(adapter.new SeperatorItem(this, "Cars"));
+		// TODO add cars
+		view = newListItemView(this, "Settings", null);
+		item = adapter.new Item(view, "settings");
+		adapter.add(item);
+		
+		// categorys
+		adapter.add(adapter.new SeperatorItem(this, "Category"));
+		for (int i = 0; i < AppData.categories.length; i++) {
+			AppData.CategoryData catData = AppData.getCategory(i);
+			view = newListItemView(this, catData.title, catData.icon);
+			item = adapter.new Item(view, "category");
+			item.arg = i;
+			adapter.add(item);
+		}
+		
+		// info
+		adapter.add(adapter.new SeperatorItem(this, "Informations"));
+		// TODO infos
+		
+		mAdapter = adapter;
+		lv.setAdapter(adapter);
+		lv.setOnItemClickListener(this);
+		return lv;
 	}
 
 	@Override
@@ -185,13 +138,22 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
         }  
 	}
 
+	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
-		
-		
-		// on category clicked
-		index -= CategoryListItemAdapter.getCategoryOffset();
-		
-		Log.d("Cat", String.format("on category item clicked %d", index));
+		ListViewAdapter.Item item = mAdapter.get(index);
+		if (item.type == "settings") {
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+		} else if (item.type == "add_car") {
+			
+		} else if (item.type == "car") {
+			
+		} else if (item.type == "category") {
+			onCategoryClicked(item.arg);
+		}
+	}
+	
+	private void onCategoryClicked(int index) {
 		AppData.CategoryData catData = AppData.getCategory(index);
 		if (null == catData) {
 			return;	// DO NOTHING

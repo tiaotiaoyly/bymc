@@ -30,8 +30,11 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Environment;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 @SuppressLint({ "WorldReadableFiles", "WorldWriteableFiles" })
 public class Util {
@@ -338,5 +341,25 @@ public class Util {
 		if (wifi == State.CONNECTED)
 			return true;
 		return false;
+	}
+	
+	public static boolean setViewImage(View view, int resID, String filename) {
+		ImageView iconView = (ImageView) view.findViewById(resID);
+		if (null == iconView) return false;
+		try {
+			Bitmap iconBmp = Util.getBitmapFromAsset(view.getContext(), filename);
+			iconView.setImageBitmap(iconBmp);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean setViewText(View view, int resID, String text) {
+		TextView titleView = (TextView) view.findViewById(resID);
+		if (null == titleView) return false;
+		titleView.setText(text);
+		return true;
 	}
 }
