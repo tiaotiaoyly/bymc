@@ -9,6 +9,7 @@
 	    android:id="@+id/seperator_title"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
+	    android:text="seperator"
 	    android:textSize="14sp"
 	    android:padding="4dp" 
 	    >

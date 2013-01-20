@@ -2,11 +2,6 @@ package com.bspif.app.mobilemechanic;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.json.JSONException;
-
-import com.google.ads.AdView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
@@ -25,7 +19,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	
 	private static final String TAG = "Main";
 	
-	private ViewGroup contentView = null;
 	private Thread mBackgroundThread = null;
 	private BackgroudRunnable mRunnable = null;
 	
@@ -119,22 +112,16 @@ public class MainActivity extends Activity implements OnClickListener {
 				String twitterShareText = Util.httpRead(Global.URL_TWITTER_SHARE_TEXT);
 				String facebookShareText = Util.httpRead(Global.URL_FACEBOOK_SHARE_TEXT);
 				if (null != twitterShareText && !twitterShareText.equals("")) {
-					try {
-						String text = removeHTMLHead(twitterShareText);
-						Log.d(TAG, text);
-						AppData.put(AppData.JSON_DATA_TWITTER_SHARE_TEXT, text);
-						AppData.saveData();
-					} catch (JSONException e) {
-					}
+					String text = removeHTMLHead(twitterShareText);
+					Log.d(TAG, text);
+					AppData.put(AppData.JSON_DATA_TWITTER_SHARE_TEXT, text);
+					AppData.saveData();
 				}
 				if (null != facebookShareText && !facebookShareText.equals("")) {
-					try {
-						String text = removeHTMLHead(facebookShareText);
-						Log.d(TAG, text);
-						AppData.put(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT, text);
-						AppData.saveData();
-					} catch (JSONException e) {
-					}
+					String text = removeHTMLHead(facebookShareText);
+					Log.d(TAG, text);
+					AppData.put(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT, text);
+					AppData.saveData();
 				}
 				
 				downloadImages();
@@ -162,7 +149,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		mBackgroundThread.start();
 		ActionReceiver.startService(this);
 		
-        contentView = (ViewGroup) this.findViewById(R.id.main_view);
+		this.findViewById(R.id.main_view);
     }
 
 	@Override

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="report_time_range">
+        <item >Overall</item>
+        <item >Per Year</item>
+        <item >Per Month</item>
+    </string-array>
+    
+</resources>

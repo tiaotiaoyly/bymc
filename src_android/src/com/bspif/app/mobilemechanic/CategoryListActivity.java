@@ -1,11 +1,8 @@
 package com.bspif.app.mobilemechanic;
 
-import java.io.IOException;
-import java.util.ArrayList;
 
 import org.json.JSONException;
 
-import com.bspif.app.mobilemechanic.AppData.CategoryData;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
@@ -16,20 +13,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class CategoryListActivity extends Activity implements OnItemClickListener {
 
@@ -63,9 +55,6 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 		// ad view
         AdView adview = Global.instance.getAdView();
         
-        // head list view
-        ListView headList = new ListView(this);
-        
 		// list view
 		ListView lv = createListView();
 		RelativeLayout.LayoutParams lvParam = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -88,6 +77,12 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 		// cars
 		adapter.add(adapter.new SeperatorItem(this, "Cars"));
 		// TODO add cars
+		
+		view = newListItemView(this, "Add a car", null);
+		item = adapter.new Item(view, "add_car");
+		adapter.add(item);
+		
+		// settings
 		view = newListItemView(this, "Settings", null);
 		item = adapter.new Item(view, "settings");
 		adapter.add(item);
@@ -145,7 +140,8 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 		} else if (item.type == "add_car") {
-			
+			Intent intent = new Intent(this, AddCarActivity.class);
+			startActivity(intent);
 		} else if (item.type == "car") {
 			
 		} else if (item.type == "category") {
@@ -173,8 +169,8 @@ public class CategoryListActivity extends Activity implements OnItemClickListene
 			if (AppData.has(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT)) {
 				try {
 					shareText = AppData.getString(AppData.JSON_DATA_FACEBOOK_SHARE_TEXT);
-				} catch (JSONException e) {
-					e.printStackTrace();
+				} catch (JSONException e1) {
+					e1.printStackTrace();
 				}
 			}
 			String[] params = shareText.split(";");

@@ -129,9 +129,14 @@ public class AppData {
 		return Util.writeToFile(mContext, jsonString, JSON_DATA_FILE);
 	}
 	
-	public static void put(String key, Object value) throws JSONException {
-		mJsonData.put(key, value);
+	public static boolean put(String key, Object value) {
+		try {
+			mJsonData.put(key, value);
+		} catch (JSONException e) {
+			return false;
+		}
 		saveData();
+		return true;
 	}
 	
 	public static boolean has(String key) {
@@ -142,7 +147,7 @@ public class AppData {
 		return mJsonData;
 	}
 	
-	public static int getInt(String key) throws JSONException {
+	public static int getInt(String key) throws JSONException{
 		return mJsonData.getInt(key);
 	}
 	
@@ -157,8 +162,7 @@ public class AppData {
 	public static JSONObject getJson(String key) throws JSONException {
 		return mJsonData.getJSONObject(key);
 	}
-	
-	
+
 	/////////////////////////////////////////////////////////////////////////////
 	
 	public static void setPurchased(boolean purchased, Context context) {
@@ -166,11 +170,7 @@ public class AppData {
 		if (purchased) {
 			purchaseStatus = getPurchasedHashKay();
 		}
-		try {
-			AppData.put(AppData.JSON_DATA_PURCHASE_STATE_KEY, purchaseStatus);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		AppData.put(AppData.JSON_DATA_PURCHASE_STATE_KEY, purchaseStatus);
 		AppData.isPurchased = purchased;
 	}
 	

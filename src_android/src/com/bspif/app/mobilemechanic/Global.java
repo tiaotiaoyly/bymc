@@ -1,13 +1,7 @@
 package com.bspif.app.mobilemechanic;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
-import android.content.Context;
 import android.os.Environment;
-import android.provider.Settings;
-
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
 import com.google.ads.AdRequest;

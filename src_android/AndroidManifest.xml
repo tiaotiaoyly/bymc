@@ -29,6 +29,7 @@
         <activity android:name=".LessonListActivity" android:configChanges="keyboardHidden|orientation"></activity>
         <activity android:name=".LessonActivity" android:configChanges="keyboardHidden|orientation"></activity>
         <activity android:name=".SettingsActivity" android:configChanges="keyboardHidden|orientation"></activity>
+        <activity android:name=".AddCarActivity" android:configChanges="keyboardHidden|orientation"></activity>
         <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"></activity>
         <service android:name="com.bspif.app.mobilemechanic.NotificationService"
             android:enabled="true"

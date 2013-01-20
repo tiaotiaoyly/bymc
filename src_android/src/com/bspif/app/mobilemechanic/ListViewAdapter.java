@@ -24,7 +24,7 @@ public class ListViewAdapter extends BaseAdapter {
 		}
 		public Item(Context context, int resID, String type) {
 			LayoutInflater inflater = LayoutInflater.from(context);
-			this.view = inflater.inflate(R.layout.cat_list_seperator, null);
+			this.view = inflater.inflate(resID, null);
 			this.type = type;
 		}
 	}

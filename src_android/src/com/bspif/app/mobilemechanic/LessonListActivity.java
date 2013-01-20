@@ -2,8 +2,6 @@ package com.bspif.app.mobilemechanic;
 
 import java.io.IOException;
 
-import org.json.JSONException;
-
 import net.robotmedia.billing.BillingController;
 import net.robotmedia.billing.BillingController.IConfiguration;
 import net.robotmedia.billing.BillingRequest.ResponseCode;
@@ -228,11 +226,7 @@ public class LessonListActivity extends Activity implements OnItemClickListener,
 	}
 	
 	protected void onRefund() {
-		try {
-			AppData.put(AppData.JSON_DATA_PURCHASE_STATE_KEY, null);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		AppData.put(AppData.JSON_DATA_PURCHASE_STATE_KEY, null);
 		AppData.saveData();
 		AppData.isPurchased = false;
 		updateView();
